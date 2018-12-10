@@ -1,0 +1,16 @@
+{
+  "Dsn": "root:password@tcp(127.0.0.1:3306)/upload_app",
+  "CheckInterval": 5,
+	"Session" : {
+		"Storage": "db",
+		"TTLMinutes": 0
+	},
+	"WebServer" : {
+		"Bind": ":3000",
+		"StaticDir": "../frontend",
+		"SSL": false,
+		"DebugMode": false,
+		"CertCache": "/var/www/.cache",
+		"HostsWhitelist": ["todo.local"]
+	}
+}
