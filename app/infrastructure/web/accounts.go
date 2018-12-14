@@ -202,6 +202,9 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 		return
 	}
 
+	matches := uploadSuccessfulRegexp.FindStringSubmatch(out.String())
+	url := "https://www.youtube.com/watch?v=" + matches[1]
+
 	_account.RequestToken = tokenPath
 
 	err = this.AccountService.Update(_account)
@@ -211,15 +214,7 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 		return
 	}
 
-	type AccountConfirmResponse struct {
-		Uploaded string `json:"uploaded"`
-	}
-
-	res := &AccountConfirmResponse{
-		Uploaded: "succcessfull",
-	}
-
-	c.JSON(200, res)
+	c.JSON(200, gin.H{"uploaded": "succcessfull", "url": url})
 }
 
 func (this *WebServer) accountUpdate(c *gin.Context) {
