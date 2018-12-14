@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4acc8b2f-8829-4475-b1ca-6d60bc33b9a9",
+		"_postman_id": "9f7e2343-81f4-4bf0-bd66-140ecddcac3d",
 		"name": "upload_app",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -10,6 +10,19 @@
 			"item": [
 				{
 					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7351102a-3f55-4ecf-bb7f-b92c7644da6c",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -66,6 +79,19 @@
 				},
 				{
 					"name": "register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b29c6223-c8ca-4633-b58c-aee9e3b4a9c1",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -92,7 +118,7 @@
 							]
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/register",
+							"raw": "127.0.0.1:3000/api/register?",
 							"host": [
 								"127",
 								"0",
@@ -196,7 +222,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "v5BQDlm6CTmWyJaC9D904gmX",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -232,6 +258,16 @@
 				{
 					"name": "127.0.0.1:3000/api/videos/",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -239,22 +275,114 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": ""
+							"raw": "127.0.0.1:3000/api/videos",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"videos"
+							]
 						}
 					},
 					"response": []
 				},
 				{
 					"name": "127.0.0.1:3000/api/videos/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8fe913da-ef0e-4f19-8235-1b3ae8e11d37",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
-						"method": "GET",
-						"header": [],
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "multipart/form-data"
+							}
+						],
 						"body": {
-							"mode": "raw",
-							"raw": ""
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Title",
+									"value": "Video title",
+									"type": "text"
+								},
+								{
+									"key": "Description",
+									"value": "Video description",
+									"type": "text"
+								},
+								{
+									"key": "Tags",
+									"value": "video tags",
+									"type": "text"
+								},
+								{
+									"key": "Category",
+									"value": "video category",
+									"type": "text"
+								},
+								{
+									"key": "Language",
+									"value": "AA",
+									"type": "text"
+								},
+								{
+									"key": "File",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "Playlist",
+									"value": "playlist_dadas",
+									"type": "text"
+								},
+								{
+									"key": "IpAddress",
+									"value": "dasdasd",
+									"type": "text"
+								}
+							]
 						},
 						"url": {
-							"raw": ""
+							"raw": "127.0.0.1:3000/api/videos/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"videos",
+								""
+							]
 						}
 					},
 					"response": []
@@ -266,37 +394,110 @@
 			"item": [
 				{
 					"name": "127.0.0.1:3000/api/accounts/",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": ""
-						}
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
 					},
-					"response": []
-				},
-				{
-					"name": "127.0.0.1:3000/api/accounts/",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "mz4R49AgL2aZoe2p28w9XKXx",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "127.0.0.1:3000/api/accounts/?limit=4",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"accounts",
+								""
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/accounts/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8fe913da-ef0e-4f19-8235-1b3ae8e11d37",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"last_operation_id\", jsonData.operation_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "multipart/form-data"
+							}
+						],
 						"body": {
-							"mode": "raw",
-							"raw": ""
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "ChannelName",
+									"value": "test channel",
+									"type": "text"
+								},
+								{
+									"key": "ChannelURL",
+									"value": "https://youtube.com",
+									"type": "text"
+								},
+								{
+									"key": "ClientSecrets",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "OTPCode",
+									"value": "dsadasdsa",
+									"type": "text"
+								},
+								{
+									"key": "Note",
+									"value": "example note",
+									"type": "text"
+								}
+							]
 						},
 						"url": {
 							"raw": "127.0.0.1:3000/api/accounts/",
@@ -311,6 +512,61 @@
 								"api",
 								"accounts",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/accounts/confirm",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "operation_id",
+									"value": "{{last_operation_id}}",
+									"type": "text"
+								},
+								{
+									"key": "confirm_code",
+									"value": "4/swB_0KQmZq0D_YpYeXq41DLE_xZkQeQQy8ImmeEoXIoeEho4A7nJpUU",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/accounts/confirm",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"accounts",
+								"confirm"
 							]
 						}
 					},
