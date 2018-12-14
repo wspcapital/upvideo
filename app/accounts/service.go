@@ -23,6 +23,10 @@ func (this *Service) FindAll(params Params) ([]*Account, error) {
 	return this.repo.FindAll(params)
 }
 
+func (this *Service) FindByOperation(UserId int, OperationId string) (*Account, error) {
+	return this.repo.FindByOperation(UserId, OperationId)
+}
+
 func (this *Service) Insert(item *Account) error {
 	return this.repo.Insert(item)
 }

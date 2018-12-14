@@ -1,35 +1,28 @@
 package web
 
 import (
-	"fmt"
-	"github.com/gin-gonic/autotls"
-	"github.com/gin-gonic/gin"
+	"bitbucket.org/marketingx/upvideo/app/accounts"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"bitbucket.org/marketingx/upvideo/app/videos"
 	"bitbucket.org/marketingx/upvideo/app/videos/titles"
-	"bitbucket.org/marketingx/upvideo/app/accounts"
+	"bitbucket.org/marketingx/upvideo/config"
+	"fmt"
+	"github.com/gin-gonic/autotls"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
 )
 
-type WebServerParams struct {
-	Bind           string
-	StaticDir      string
-	DebugMode      bool
-	SSL            bool
-	CertCache      string
-	HostsWhitelist []string
-}
-
 type WebServer struct {
-	Params           WebServerParams
-	UserService      usr.UserService
-	SessionService   session.Service
-	VideoService     *videos.Service
-	AccountService   *accounts.Service
-	TitleService     *titles.Service
+	Config         config.Config
+	Params         config.WebServerParams
+	UserService    usr.UserService
+	SessionService session.Service
+	VideoService   *videos.Service
+	AccountService *accounts.Service
+	TitleService   *titles.Service
 }
 
 func (this *WebServer) Start() {

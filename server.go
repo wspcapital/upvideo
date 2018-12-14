@@ -1,21 +1,21 @@
 package main
 
 import (
-	"database/sql"
-	"encoding/json"
-	"fmt"
-	_ "github.com/go-sql-driver/mysql"
+	"bitbucket.org/marketingx/upvideo/app/accounts"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure/web"
-	"bitbucket.org/marketingx/upvideo/app/accounts"
 	"bitbucket.org/marketingx/upvideo/app/videos"
 	"bitbucket.org/marketingx/upvideo/app/videos/titles"
+	"bitbucket.org/marketingx/upvideo/config"
+	"database/sql"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
 	"log"
 	"os"
-	_"strconv"
+	_ "strconv"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ func main() {
 		return
 	}
 
-	cfg := readConfig(os.Args[1])
+	cfg := config.ReadConfig(os.Args[1])
 	db, err := sql.Open("mysql", cfg.Dsn)
 	if err != nil {
 		log.Fatal(err)
@@ -43,31 +43,20 @@ func main() {
 		fmt.Println("Incorrect session storage specified")
 		os.Exit(1)
 	}
-	fmt.Printf("config: %v\n", cfg);
+	fmt.Printf("config: %v\n", cfg)
 
 	webServer := &web.WebServer{
-		UserService: usr.NewUserService(infrastructure.NewUserRepository(db)),
-		SessionService : session.NewService(sessionRepository),
-		VideoService : videos.NewService(videos.NewRepository(db)),
-		AccountService : accounts.NewService(accounts.NewRepository(db)),
-		TitleService : titles.NewService(titles.NewRepository(db)),
-		Params: cfg.WebServer,
+		UserService:    usr.NewUserService(infrastructure.NewUserRepository(db)),
+		SessionService: session.NewService(sessionRepository),
+		VideoService:   videos.NewService(videos.NewRepository(db)),
+		AccountService: accounts.NewService(accounts.NewRepository(db)),
+		TitleService:   titles.NewService(titles.NewRepository(db)),
+		Params:         cfg.WebServer,
+		Config:         cfg,
 	}
 
 	webServer.Start()
 
-}
-
-func readConfig(filename string) Config {
-	file, _ := os.Open(filename)
-	defer file.Close()
-	decoder := json.NewDecoder(file)
-	configuration := Config{}
-	err := decoder.Decode(&configuration)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-	return configuration
 }
 
 func initDbTables(db *sql.DB) {

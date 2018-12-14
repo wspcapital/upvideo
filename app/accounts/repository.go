@@ -3,12 +3,48 @@ package accounts
 import (
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/kataras/iris/core/errors"
 	"log"
 	"time"
 )
 
 type Repository struct {
 	db *sql.DB
+}
+
+func (this *Repository) FindByOperation(UserId int, OperationId string) (*Account, error) {
+	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "Clientsecrets", "Requesttoken", "AuthUrl", "OnetimeCode", "Note", "OperationId").From("accounts")
+
+	if UserId < 1 || OperationId == "" {
+		return nil, errors.New("Wrong sql request parameters")
+	}
+
+	query = query.Where("UserId = ?", UserId).Where("OperationId = ?", OperationId)
+
+	row := query.RunWith(this.db).QueryRow()
+
+	_account := &Account{}
+	err := row.Scan(
+		&_account.Id,
+		&_account.UserId,
+		&_account.Username,
+		&_account.Password,
+		&_account.ChannelName,
+		&_account.ChannelUrl,
+		&_account.ClientSecrets,
+		&_account.RequestToken,
+		&_account.AuthUrl,
+		&_account.OTPCode,
+		&_account.Note,
+		&_account.OperationId,
+	)
+	log.Println(_account)
+
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+
+	return _account, nil
 }
 
 func (this *Repository) FindAll(params Params) (items []*Account, err error) {
@@ -46,18 +82,19 @@ func (this *Repository) FindAll(params Params) (items []*Account, err error) {
 
 	for rows.Next() {
 		_account := &Account{}
-		rows.Scan(	
-					&_account.UserId,
-					&_account.Username,
-					&_account.Password,
-					&_account.ChannelName,
-					&_account.ChannelUrl,
-					&_account.ClientSecrets,
-					&_account.RequestToken,
-					&_account.AuthUrl,
-					&_account.OTPCode,
-					&_account.Note,
-				)
+		rows.Scan(
+			&_account.UserId,
+			&_account.Username,
+			&_account.Password,
+			&_account.ChannelName,
+			&_account.ChannelUrl,
+			&_account.ClientSecrets,
+			&_account.RequestToken,
+			&_account.AuthUrl,
+			&_account.OTPCode,
+			&_account.Note,
+			&_account.OperationId,
+		)
 		log.Println(_account)
 		items = append(items, _account)
 	}
@@ -67,26 +104,26 @@ func (this *Repository) FindAll(params Params) (items []*Account, err error) {
 
 func (this *Repository) Insert(item *Account) error {
 	log.Println(item)
-	result, err := this.db.Exec("INSERT INTO accounts(UserId, Username, Password, Channelname, Channelurl, Clientsecrets, Requesttoken, AuthUrl, OnetimeCode, Note, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-						item.UserId,
-						item.Username,
-						item.Password,
-						item.ChannelName,
-						item.ChannelUrl,
-						item.ClientSecrets,
-						item.RequestToken,
-						item.AuthUrl,
-						item.OTPCode,
-						item.Note,
-						int32(time.Now().Unix()),
-						int32(time.Now().Unix()),
-					)
+	result, err := this.db.Exec("INSERT INTO accounts(UserId, Username, Password, Channelname, Channelurl, Clientsecrets, Requesttoken, AuthUrl, OnetimeCode, Note, OperationId, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		item.UserId,
+		item.Username,
+		item.Password,
+		item.ChannelName,
+		item.ChannelUrl,
+		item.ClientSecrets,
+		item.RequestToken,
+		item.AuthUrl,
+		item.OTPCode,
+		item.Note,
+		item.OperationId,
+		int32(time.Now().Unix()),
+		int32(time.Now().Unix()),
+	)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	
-	
+
 	Id64, err := result.LastInsertId()
 	if err != nil {
 		log.Println(err)
@@ -96,18 +133,20 @@ func (this *Repository) Insert(item *Account) error {
 }
 
 func (this *Repository) Update(item *Account) error {
-	_, err := this.db.Exec("UPDATE accounts SET UserId=?, Username=?, Password=?, Channelname=?, Channelurl=?, Clientsecrets=?, Requesttoken=?, AuthUrl=?, OnetimeCode=?, Note=?, WHERE Id=?", 
-						item.UserId,
-						item.Username,
-						item.Password,
-						item.ChannelName,
-						item.ChannelUrl,
-						item.ClientSecrets,
-						item.RequestToken,
-						item.AuthUrl,
-						item.OTPCode,
-						item.Note,
-					)
+	_, err := this.db.Exec("UPDATE accounts SET UserId=?, Username=?, Password=?, Channelname=?, Channelurl=?, Clientsecrets=?, Requesttoken=?, AuthUrl=?, OnetimeCode=?, Note=?, OperationId=? WHERE Id=?",
+		item.UserId,
+		item.Username,
+		item.Password,
+		item.ChannelName,
+		item.ChannelUrl,
+		item.ClientSecrets,
+		item.RequestToken,
+		item.AuthUrl,
+		item.OTPCode,
+		item.Note,
+		item.OperationId,
+		item.Id,
+	)
 	return err
 }
 

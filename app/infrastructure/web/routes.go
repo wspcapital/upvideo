@@ -42,6 +42,7 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 		accounts.GET("/", this.accountIndex)
 		accounts.GET("/:id", this.accountView)
 		accounts.POST("/", this.accountCreate)
+		accounts.POST("/confirm", this.accountConfirm)
 		accounts.PUT("/:id", this.accountUpdate)
 		accounts.DELETE("/:id", this.accountDelete)
 	}

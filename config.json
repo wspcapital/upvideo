@@ -1,6 +1,9 @@
 {
-  "Dsn": "root:password@tcp(127.0.0.1:3306)/upload_app",
-  "CheckInterval": 5,
+	"Dsn": "root:password@tcp(127.0.0.1:3306)/upload_app",
+    "CheckInterval": 5,
+    "youtubeuploader_cmd": "./youtubeuploader/youtubeuploader",
+    "youtubeuploader_path": "./youtubeuploader",
+	"testvideo": "./test.mp4",
 	"Session" : {
 		"Storage": "db",
 		"TTLMinutes": 0
