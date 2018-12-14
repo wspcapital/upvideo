@@ -1,10 +1,10 @@
 package web
 
 import (
-	"github.com/gin-gonic/gin"
 	"bitbucket.org/marketingx/upvideo/app/videos/titles"
-	"strconv"
+	"github.com/gin-gonic/gin"
 	"log"
+	"strconv"
 )
 
 type TitleResponse struct {
@@ -13,11 +13,11 @@ type TitleResponse struct {
 }
 
 func (this *WebServer) titleIndex(c *gin.Context) {
-	limit, err := strconv.ParseInt(c.Param("limit"), 10, 32)
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 32)
 	if err != nil {
 		limit = 0
 	}
-	offset, err := strconv.ParseInt(c.Param("offset"), 10, 32)
+	offset, err := strconv.ParseInt(c.Query("offset"), 10, 32)
 	if err != nil {
 		offset = 0
 	}
@@ -76,7 +76,7 @@ func (this *WebServer) titleUpdate(c *gin.Context) {
 	}
 	unsafe := &titles.Title{}
 	c.BindJSON(unsafe)
-	
+
 	//TODO: _title.VideoID
 	_title.Title = unsafe.Title
 	_title.Tags = unsafe.Tags

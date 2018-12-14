@@ -10,5 +10,5 @@ type Video struct {
 	Language    string
 	File        string
 	Playlist    string
-	IpAddress  string
+	IpAddress   string
 }

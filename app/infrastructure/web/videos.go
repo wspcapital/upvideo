@@ -1,10 +1,10 @@
 package web
 
 import (
-	"github.com/gin-gonic/gin"
 	"bitbucket.org/marketingx/upvideo/app/videos"
+	"github.com/gin-gonic/gin"
+	_ "log"
 	"strconv"
-	_"log"
 )
 
 type VideoResponse struct {
@@ -13,11 +13,11 @@ type VideoResponse struct {
 }
 
 func (this *WebServer) videoIndex(c *gin.Context) {
-	limit, err := strconv.ParseInt(c.Param("limit"), 10, 32)
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 32)
 	if err != nil {
 		limit = 0
 	}
-	offset, err := strconv.ParseInt(c.Param("offset"), 10, 32)
+	offset, err := strconv.ParseInt(c.Query("offset"), 10, 32)
 	if err != nil {
 		offset = 0
 	}
@@ -27,14 +27,27 @@ func (this *WebServer) videoIndex(c *gin.Context) {
 		Offset: uint64(offset),
 	})
 	if err != nil {
-		c.AbortWithError(400, err)
+		_ = c.AbortWithError(400, err)
 		return
 	}
 	c.JSON(200, VideoResponse{Items: items, Total: len(items)})
 }
 
-
 func (this *WebServer) videoCreate(c *gin.Context) {
+	// request
+	//{
+	//	"Id": 7,
+	//	"UserId": 6,
+	//	"Title": "dsadasdsa",
+	//	"Description": "dsadasda",
+	//	"Tags": "dsadasdasda",
+	//	"Category": "TT",
+	//	"Language": "AA",
+	//	"File": "dsadsadsa",
+	//	"Playlist": "xadasdsa",
+	//	"IpAddress": "dasdsadsa"
+	//}
+
 	unsafe := &videos.Video{}
 	c.BindJSON(unsafe)
 	video := &videos.Video{}
@@ -73,7 +86,7 @@ func (this *WebServer) videoUpdate(c *gin.Context) {
 	}
 	unsafe := &videos.Video{}
 	c.BindJSON(unsafe)
-	
+
 	video.Title = unsafe.Title
 	video.Description = unsafe.Description
 	video.Tags = unsafe.Tags

@@ -48,7 +48,7 @@ func (this *Repository) FindByOperation(UserId int, OperationId string) (*Accoun
 }
 
 func (this *Repository) FindAll(params Params) (items []*Account, err error) {
-	query := sq.Select("Id", "UserId", "Username", "Channelname").From("accounts")
+	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "Clientsecrets", "Requesttoken", "AuthUrl", "OnetimeCode", "Note", "OperationId").From("accounts")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
@@ -83,6 +83,7 @@ func (this *Repository) FindAll(params Params) (items []*Account, err error) {
 	for rows.Next() {
 		_account := &Account{}
 		rows.Scan(
+			&_account.Id,
 			&_account.UserId,
 			&_account.Username,
 			&_account.Password,
@@ -95,7 +96,6 @@ func (this *Repository) FindAll(params Params) (items []*Account, err error) {
 			&_account.Note,
 			&_account.OperationId,
 		)
-		log.Println(_account)
 		items = append(items, _account)
 	}
 	rows.Close()

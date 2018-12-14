@@ -28,11 +28,11 @@ type AccountResponse struct {
 }
 
 func (this *WebServer) accountIndex(c *gin.Context) {
-	limit, err := strconv.ParseInt(c.Param("limit"), 10, 32)
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 32)
 	if err != nil {
 		limit = 0
 	}
-	offset, err := strconv.ParseInt(c.Param("offset"), 10, 32)
+	offset, err := strconv.ParseInt(c.Query("offset"), 10, 32)
 	if err != nil {
 		offset = 0
 	}
@@ -42,7 +42,7 @@ func (this *WebServer) accountIndex(c *gin.Context) {
 		Offset: uint64(offset),
 	})
 	if err != nil {
-		c.AbortWithError(400, err)
+		_ = c.AbortWithError(400, err)
 		return
 	}
 

@@ -11,7 +11,7 @@ type Repository struct {
 }
 
 func (this *Repository) FindAll(params Params) (items []*Title, err error) {
-	query := sq.Select("Id", "UserId", "VideoId", "Title").From("titles")
+	query := sq.Select("Id", "UserId", "VideoId", "Title", "Tags", "File", "Posted", "Converted", "Pending", "IpAddress").From("titles")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
@@ -44,22 +44,21 @@ func (this *Repository) FindAll(params Params) (items []*Title, err error) {
 		return
 	}
 	for rows.Next() {
-		titlee := &Title{}
+		title := &Title{}
 		rows.Scan(
-			&titlee.UserId,
-			&titlee.VideoId,
-			&titlee.Title,
-			&titlee.Tags,
-			&titlee.File,
-			&titlee.Posted,
-			&titlee.Converted,
-			&titlee.Pending,
-			&titlee.IpAddress,
+			&title.Id,
+			&title.UserId,
+			&title.VideoId,
+			&title.Title,
+			&title.Tags,
+			&title.File,
+			&title.Posted,
+			&title.Converted,
+			&title.Pending,
+			&title.IpAddress,
 		)
 
-		log.Println(titlee)
-
-		items = append(items, titlee)
+		items = append(items, title)
 	}
 	rows.Close()
 	return
@@ -67,16 +66,16 @@ func (this *Repository) FindAll(params Params) (items []*Title, err error) {
 
 func (this *Repository) Insert(item *Title) error {
 	result, err := this.db.Exec("INSERT INTO titles(UserId, VideoId, Title, Tags, File, Posted, Converted, Pending, IpAddress) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					item.UserId,
-					item.VideoId,
-					item.Title,
-					item.Tags,
-					item.File,
-					item.Posted,
-					item.Converted,
-					item.Pending,
-					item.IpAddress,
-				)
+		item.UserId,
+		item.VideoId,
+		item.Title,
+		item.Tags,
+		item.File,
+		item.Posted,
+		item.Converted,
+		item.Pending,
+		item.IpAddress,
+	)
 	log.Println(err)
 	Id64, err := result.LastInsertId()
 	item.Id = int(Id64)
@@ -85,17 +84,17 @@ func (this *Repository) Insert(item *Title) error {
 
 func (this *Repository) Update(item *Title) error {
 	_, err := this.db.Exec("UPDATE titles SET UserId=?, VideoId=?, Title=?, Tags=?, File=?, Posted=?, Converted=?, Pending=?, IpAddress=? WHERE Id=?",
-					item.UserId,
-					item.VideoId,
-					item.Title,
-					item.Tags,
-					item.File,
-					item.Posted,
-					item.Converted,
-					item.Pending,
-					item.IpAddress,
-					item.Id,
-				)
+		item.UserId,
+		item.VideoId,
+		item.Title,
+		item.Tags,
+		item.File,
+		item.Posted,
+		item.Converted,
+		item.Pending,
+		item.IpAddress,
+		item.Id,
+	)
 	return err
 }
 

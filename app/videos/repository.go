@@ -12,7 +12,7 @@ type Repository struct {
 }
 
 func (this *Repository) FindAll(params Params) (items []*Video, err error) {
-	query := sq.Select("Id", "UserId", "Title").From("videos")
+	query := sq.Select("Id", "UserId", "Title", "Description", "Tags", "Category", "Language", "File", "Playlist", "IpAddress").From("videos")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
@@ -42,16 +42,17 @@ func (this *Repository) FindAll(params Params) (items []*Video, err error) {
 	for rows.Next() {
 		video := &Video{}
 		rows.Scan(
-					&video.UserId,
-					&video.Title,
-					&video.Description,
-					&video.Tags,
-					&video.Category,
-					&video.Language,
-					&video.File,
-					&video.Playlist,
-					&video.IpAddress,
-				)
+			&video.Id,
+			&video.UserId,
+			&video.Title,
+			&video.Description,
+			&video.Tags,
+			&video.Category,
+			&video.Language,
+			&video.File,
+			&video.Playlist,
+			&video.IpAddress,
+		)
 		items = append(items, video)
 	}
 	rows.Close()
@@ -59,20 +60,20 @@ func (this *Repository) FindAll(params Params) (items []*Video, err error) {
 }
 
 func (this *Repository) Insert(item *Video) error {
-	result, err := this.db.Exec("INSERT INTO videos(UserId, Title, Description, Tags, Category, Language, File, Playlist, IpAddress, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-					item.UserId,
-					item.Title,
-					item.Description,
-					item.Tags,
-					item.Category,
-					item.Language,
-					item.File,
-					item.Playlist,
-					item.IpAddress,
-					int32(time.Now().Unix()),
-					int32(time.Now().Unix()),
-			)
-	
+	result, err := this.db.Exec("INSERT INTO videos(UserId, Title, Description, Tags, Category, Language, File, Playlist, IpAddress, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		item.UserId,
+		item.Title,
+		item.Description,
+		item.Tags,
+		item.Category,
+		item.Language,
+		item.File,
+		item.Playlist,
+		item.IpAddress,
+		int32(time.Now().Unix()),
+		int32(time.Now().Unix()),
+	)
+
 	log.Println(err)
 
 	Id64, err := result.LastInsertId()
