@@ -8,6 +8,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/infrastructure/web"
 	"bitbucket.org/marketingx/upvideo/app/videos"
 	"bitbucket.org/marketingx/upvideo/app/videos/titles"
+	"bitbucket.org/marketingx/upvideo/aws"
 	"bitbucket.org/marketingx/upvideo/config"
 	"database/sql"
 	"fmt"
@@ -33,6 +34,8 @@ func main() {
 	db.SetMaxIdleConns(100)
 	defer db.Close()
 	initDbTables(db)
+
+	err = aws.AWSInitSession(cfg)
 
 	var sessionRepository session.Repository
 	if cfg.Session.Storage == "db" {

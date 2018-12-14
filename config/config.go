@@ -20,6 +20,7 @@ type Config struct {
 	TestVideoPath       string `json:"testvideo"`
 	Session             SessionConfig
 	WebServer           WebServerParams
+	AWS                 AWSParams `json:"AWS"`
 }
 
 func ReadConfig(filename string) Config {

@@ -15,5 +15,11 @@
 		"DebugMode": false,
 		"CertCache": "/var/www/.cache",
 		"HostsWhitelist": ["todo.local"]
+	},
+	"AWS": {
+		"ACCESS_KEY_ID": "",
+		"SECRET_KEY": "",
+		"REGION": "us-west-1",
+		"bucket": ""
 	}
 }

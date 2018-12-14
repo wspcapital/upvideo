@@ -2,8 +2,13 @@ package web
 
 import (
 	"bitbucket.org/marketingx/upvideo/app/videos"
+	"bitbucket.org/marketingx/upvideo/aws"
+	"bitbucket.org/marketingx/upvideo/validator"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "log"
+	"net/http"
+	"path/filepath"
 	"strconv"
 )
 
@@ -35,36 +40,70 @@ func (this *WebServer) videoIndex(c *gin.Context) {
 
 func (this *WebServer) videoCreate(c *gin.Context) {
 	// request
-	//{
-	//	"Id": 7,
-	//	"UserId": 6,
-	//	"Title": "dsadasdsa",
-	//	"Description": "dsadasda",
-	//	"Tags": "dsadasdasda",
-	//	"Category": "TT",
-	//	"Language": "AA",
-	//	"File": "dsadsadsa",
-	//	"Playlist": "xadasdsa",
-	//	"IpAddress": "dasdsadsa"
-	//}
+	type VideoCreateRequest struct {
+		Title       string `validate:"title"`
+		Description string `validate:"text"`
+		Tags        string `validate:"text"`
+		Category    string
+		Language    string
+		Playlist    string
+		IpAddress   string
+	}
 
-	unsafe := &videos.Video{}
-	c.BindJSON(unsafe)
-	video := &videos.Video{}
-	video.Title = unsafe.Title
-	video.Description = unsafe.Description
-	video.Tags = unsafe.Tags
-	video.Category = unsafe.Category
-	video.Language = unsafe.Language
-	video.File = unsafe.File
-	video.Playlist = unsafe.Playlist
-	video.IpAddress = unsafe.IpAddress
-	video.UserId = this.getUser(c).Id
-	err := this.VideoService.Insert(video)
+	file, err := c.FormFile("File")
 	if err != nil {
-		c.AbortWithError(500, err)
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
 		return
 	}
+	fileReader, err := file.Open()
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		return
+	}
+	defer fileReader.Close()
+
+	userId := this.getUser(c).Id
+	fileName := filepath.Base(file.Filename)
+
+	req := &videos.Video{
+		Title:       c.PostForm("Title"),
+		Description: c.PostForm("Description"),
+		Tags:        c.PostForm("Tags"),
+		Category:    c.PostForm("Category"),
+		Language:    c.PostForm("Language"),
+		Playlist:    c.PostForm("Playlist"),
+		IpAddress:   c.PostForm("IpAddress"),
+	}
+
+	err = validator.GetValidatorInstance().Struct(req)
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		return
+	}
+
+	video := &videos.Video{}
+	video.Title = req.Title
+	video.Description = req.Description
+	video.Tags = req.Tags
+	video.Category = req.Category
+	video.Language = req.Language
+	video.File = fileName
+	video.Playlist = req.Playlist
+	video.IpAddress = req.IpAddress
+	video.UserId = userId
+	err = this.VideoService.Insert(video)
+	if err != nil {
+		_ = c.AbortWithError(500, err)
+		return
+	}
+
+	targetPath := fmt.Sprintf("/%d/%d/%s", userId, video.Id, fileName)
+	err = aws.UploadS3File(targetPath, fileReader)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
 	c.JSON(200, video)
 }
 
