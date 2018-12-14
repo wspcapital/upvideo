@@ -28,7 +28,7 @@ func AWSInitSession(conf config.Config) (err error) {
 	return
 }
 
-func UploadS3File(key string, reader io.Reader) error {
+func UploadS3File(key string, reader io.Reader) (string, error) {
 	uploader := s3manager.NewUploader(aws_session)
 	result, err := uploader.Upload(&s3manager.UploadInput{
 		Body:   reader,
@@ -37,10 +37,10 @@ func UploadS3File(key string, reader io.Reader) error {
 	})
 	if err != nil {
 		fmt.Println("Failed to upload to AWS S3: " + err.Error())
-		return err
+		return "", err
 	}
 
 	fmt.Println("Successfully uploaded to", result.Location)
 
-	return err
+	return result.Location, err
 }

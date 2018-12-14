@@ -168,6 +168,7 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 	tokensDir := path.Join(this.Config.YoutubeUploaderPath, "/tokens")
 	tokenPath := path.Join(tokensDir, "request_"+req.OperationId+".token.json")
 	if err = os.MkdirAll(tokensDir, os.ModePerm); err != nil {
+		fmt.Println("\n create tokenPath Error: ", err.Error())
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
@@ -182,11 +183,6 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 		return
 	}
 
-	if err = os.MkdirAll(tokensDir, os.ModePerm); err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
 	// cmd youtubeuploader upload test video
 	cmd := exec.Command(this.Config.YoutubeUploaderCmd, "-headlessAuth", "-secrets", clientSecretsPath, "-cache", tokenPath, "-filename", this.Config.TestVideoPath)
 	var out bytes.Buffer
@@ -194,14 +190,14 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
 	err = cmd.Run()
-	if !uploadSuccessfulRegexp.Match(out.Bytes()) {
-		fmt.Println("Youtube uploader Result: " + out.String())
-		c.Status(http.StatusInternalServerError)
-		return
-	}
 	if err != nil {
 		fmt.Println("Youtube uploader Error: " + out.String())
 		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	if !uploadSuccessfulRegexp.Match(out.Bytes()) {
+		fmt.Println("Youtube uploader Result: " + out.String())
 		c.Status(http.StatusInternalServerError)
 		return
 	}

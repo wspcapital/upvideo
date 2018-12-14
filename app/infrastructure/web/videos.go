@@ -93,14 +93,21 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 	video.UserId = userId
 	err = this.VideoService.Insert(video)
 	if err != nil {
-		_ = c.AbortWithError(500, err)
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
 	targetPath := fmt.Sprintf("/%d/%d/%s", userId, video.Id, fileName)
-	err = aws.UploadS3File(targetPath, fileReader)
+	location, err := aws.UploadS3File(targetPath, fileReader)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	video.File = location
+	err = this.VideoService.Update(video)
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
