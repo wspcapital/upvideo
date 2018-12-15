@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `Password` varchar(250) NULL,
   `Channelname` varchar(250) NOT NULL,
   `Channelurl` varchar(250) NOT NULL,
+  `ClientId` varchar(250) NOT NULL,
   `Clientsecrets` varchar(250) NOT NULL,
   `Requesttoken` varchar(250) NOT NULL,
   `AuthUrl` text NULL,
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `Updated_at` int(11) NULL, 
   `Deleted` bool NOT NULL DEFAULT FALSE,
   PRIMARY KEY (`Id`),
+  UNIQUE (`UserId`, `ClientId`),
   UNIQUE (`OperationId`),
   KEY `UserId` (`UserId`)
   ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

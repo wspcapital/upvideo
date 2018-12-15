@@ -7,6 +7,7 @@ type Account struct {
 	Password      string `json:"password"`
 	ChannelName   string `json:"channel_name"`
 	ChannelUrl    string `json:"channel_url"`
+	ClientId      string `json:"client_id"`
 	ClientSecrets string `json:"client_secrets"`
 	RequestToken  string `json:"request_token"`
 	AuthUrl       string `json:"auth_url"`

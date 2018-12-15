@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/youtube/v3"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -53,15 +54,25 @@ type Config struct {
 	Web       ClientConfig `json:"web"`
 }
 
-// readConfig reads the configuration from clientSecretsFile.
+// ReadConfig reads the configuration from clientSecretsFile.
 // It returns an oauth configuration object for use with the Google API client.
-func readConfig(secretsPath string) (*oauth2.Config, error) {
+func ReadConfig(secretsPath string) (*oauth2.Config, error) {
 	// Read the secrets file
-	data, err := ioutil.ReadFile(secretsPath)
+	data, err := os.Open(secretsPath)
 	if err != nil {
 		pwd, _ := os.Getwd()
 		fullPath := filepath.Join(pwd, secretsPath)
 		return nil, fmt.Errorf(missingClientSecretsMessage, fullPath)
+	}
+
+	return ParseConfig(data)
+}
+
+// Parse config
+func ParseConfig(reader io.Reader) (*oauth2.Config, error) {
+	data, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return nil, err
 	}
 
 	cfg1 := new(Config)
@@ -95,7 +106,7 @@ func readConfig(secretsPath string) (*oauth2.Config, error) {
 }
 
 func GetAuthURL(operationId string, secretsPath string) (string, error) {
-	config, err := readConfig(secretsPath)
+	config, err := ReadConfig(secretsPath)
 	if err != nil {
 		msg := fmt.Sprintf("Cannot read configuration file: %v", err)
 		return "", errors.New(msg)
@@ -105,7 +116,7 @@ func GetAuthURL(operationId string, secretsPath string) (string, error) {
 }
 
 func VerifyCode(code string, tokenPath string, secretsPath string) error {
-	config, err := readConfig(secretsPath)
+	config, err := ReadConfig(secretsPath)
 	if err != nil {
 		msg := fmt.Sprintf("Cannot read configuration file: %v", err)
 		return errors.New(msg)

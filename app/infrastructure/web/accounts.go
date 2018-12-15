@@ -6,6 +6,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/validator"
 	"bitbucket.org/marketingx/upvideo/youtubeauth"
 	"bytes"
+	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "log"
@@ -79,6 +80,36 @@ func (this *WebServer) accountCreate(c *gin.Context) {
 		return
 	}
 
+	src, err := file.Open()
+	if err != nil {
+		fmt.Println("\n Can not open attached ClientSecrets file. Error: ", err.Error())
+		c.String(http.StatusInternalServerError, fmt.Sprintf("get err: %s", err.Error()))
+		return
+	}
+	defer src.Close()
+
+	// check client_id exists for current user
+	clientSecretsConf, err := youtubeauth.ParseConfig(src)
+	if err != nil {
+		fmt.Println("\n Can not parse ClientSecrets. Error: ", err.Error())
+		c.String(http.StatusInternalServerError, fmt.Sprintf("get err: %s", err.Error()))
+		return
+	}
+
+	items, err := this.AccountService.FindAll(accounts.Params{
+		UserId:   this.getUser(c).Id,
+		ClientId: clientSecretsConf.ClientID,
+	})
+	if err != nil && err != sql.ErrNoRows {
+		fmt.Println("\n AccountService.FindAll Error: ", err.Error())
+		c.String(http.StatusInternalServerError, fmt.Sprintf("get err: %s", err.Error()))
+		return
+	} else if len(items) > 0 {
+		c.String(http.StatusBadRequest, fmt.Sprintf("This clent secrets client_id already exists"))
+		return
+	}
+
+	// store client_secrets file to disk
 	var (
 		operationId       string
 		clientSecretsPath string
@@ -115,6 +146,7 @@ func (this *WebServer) accountCreate(c *gin.Context) {
 	_account.UserId = this.getUser(c).Id
 	_account.ChannelName = req.ChannelName
 	_account.ChannelUrl = req.ChannelUrl
+	_account.ClientId = clientSecretsConf.ClientID
 	_account.ClientSecrets = clientSecretsPath
 	_account.AuthUrl = authUrl
 	_account.OTPCode = req.OTPCode
