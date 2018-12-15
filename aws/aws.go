@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"io"
+	"net/url"
 )
 
 var (
@@ -42,5 +43,11 @@ func UploadS3File(key string, reader io.Reader) (string, error) {
 
 	fmt.Println("Successfully uploaded to", result.Location)
 
-	return result.Location, err
+	location, err := url.QueryUnescape(result.Location)
+	if err != nil {
+		fmt.Println("Failed to decode location: " + err.Error())
+		return "", err
+	}
+
+	return location, err
 }
