@@ -2,6 +2,6 @@
   "title": "my test title",
   "description": "my test description",
   "tags": ["test tag1", "test tag2"],
-  "privacyStatus": "public",
+  "privacyStatus": "unlisted",
   "language":  "en"
 }
