@@ -3,7 +3,8 @@
     "CheckInterval": 5,
     "youtubeuploader_cmd": "./youtubeuploader/youtubeuploader",
     "youtubeuploader_path": "./youtubeuploader",
-	"testvideo": "./test.mp4",
+	"testvideo": "./youtubeuploader/test.mp4",
+	"testvideo_meta": "./youtubeuploader-testvideo.meta.json",
 	"Session" : {
 		"Storage": "db",
 		"TTLMinutes": 0

@@ -165,6 +165,11 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 		return
 	}
 
+	if _account.RequestToken != "" {
+		c.String(http.StatusBadRequest, "Your account already confirmed")
+		return
+	}
+
 	tokensDir := path.Join(this.Config.YoutubeUploaderPath, "/tokens")
 	tokenPath := path.Join(tokensDir, "request_"+req.OperationId+".token.json")
 	if err = os.MkdirAll(tokensDir, os.ModePerm); err != nil {
@@ -184,7 +189,7 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 	}
 
 	// cmd youtubeuploader upload test video
-	cmd := exec.Command(this.Config.YoutubeUploaderCmd, "-headlessAuth", "-secrets", clientSecretsPath, "-cache", tokenPath, "-filename", this.Config.TestVideoPath)
+	cmd := exec.Command(this.Config.YoutubeUploaderCmd, "-headlessAuth", "-secrets", clientSecretsPath, "-cache", tokenPath, "-filename", this.Config.TestVideoPath, "-metaJSON", this.Config.TestVideoMetaPath)
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &out

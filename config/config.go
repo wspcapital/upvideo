@@ -18,6 +18,7 @@ type Config struct {
 	YoutubeUploaderPath string `json:"youtubeuploader_path"`
 	YoutubeUploaderCmd  string `json:"youtubeuploader_cmd"`
 	TestVideoPath       string `json:"testvideo"`
+	TestVideoMetaPath   string `json:"testvideo_meta"`
 	Session             SessionConfig
 	WebServer           WebServerParams
 	AWS                 AWSParams `json:"AWS"`
@@ -59,4 +60,11 @@ func resolveRelativePaths(conf *Config) {
 	}
 
 	conf.TestVideoPath = p
+
+	p, err = filepath.Abs(conf.TestVideoMetaPath)
+	if err != nil {
+		fmt.Sprintf("Can not resolve path: %s", conf.TestVideoMetaPath)
+	}
+
+	conf.TestVideoMetaPath = p
 }
