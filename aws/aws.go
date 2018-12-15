@@ -35,6 +35,7 @@ func UploadS3File(key string, reader io.Reader) (string, error) {
 		Body:   reader,
 		Bucket: aws.String(params.Bucket),
 		Key:    aws.String(key),
+		ACL:    aws.String("public-read"),
 	})
 	if err != nil {
 		fmt.Println("Failed to upload to AWS S3: " + err.Error())
