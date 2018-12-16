@@ -44,7 +44,7 @@ func (this *Service) Start() {
 }
 
 func (this *Service) work() {
-	fmt.Printf("Job Worker has started work... \n")
+	//fmt.Printf("Job Worker has started work... \n")
 	// check _jobs
 
 	_jobs, err := this.JobService.FindAll(jobs.Params{ProcessId: "", Limit: 5})
@@ -54,7 +54,7 @@ func (this *Service) work() {
 	}
 
 	if _jobs == nil || err == sql.ErrNoRows {
-		fmt.Println("Nothing to do")
+		//fmt.Println("Nothing to do")
 		return
 	}
 
