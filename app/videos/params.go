@@ -10,6 +10,7 @@ type Params struct {
 	Language    string
 	File        string
 	Playlist    string
+	TitleGen    bool
 	IpAddress   string
 	Offset      uint64
 	Limit       uint64

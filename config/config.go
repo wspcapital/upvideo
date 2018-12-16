@@ -21,7 +21,8 @@ type Config struct {
 	TestVideoMetaPath   string `json:"testvideo_meta"`
 	Session             SessionConfig
 	WebServer           WebServerParams
-	AWS                 AWSParams `json:"AWS"`
+	AWS                 AWSParams         `json:"AWS"`
+	Keywordtool         KeywordtoolParams `json:"keywordtool.io"`
 }
 
 func ReadConfig(filename string) Config {

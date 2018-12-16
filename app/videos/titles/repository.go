@@ -2,8 +2,10 @@ package titles
 
 import (
 	"database/sql"
+	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"log"
+	"time"
 )
 
 type Repository struct {
@@ -65,7 +67,7 @@ func (this *Repository) FindAll(params Params) (items []*Title, err error) {
 }
 
 func (this *Repository) Insert(item *Title) error {
-	result, err := this.db.Exec("INSERT INTO titles(UserId, VideoId, Title, Tags, File, Posted, Converted, Pending, IpAddress) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	result, err := this.db.Exec("INSERT INTO titles(UserId, VideoId, Title, Tags, File, Posted, Converted, Pending, IpAddress, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		item.UserId,
 		item.VideoId,
 		item.Title,
@@ -75,8 +77,15 @@ func (this *Repository) Insert(item *Title) error {
 		item.Converted,
 		item.Pending,
 		item.IpAddress,
+		int32(time.Now().Unix()),
+		int32(time.Now().Unix()),
 	)
-	log.Println(err)
+
+	if err != nil {
+		fmt.Printf("SQL Insert err: \n%v\n", err)
+		return err
+	}
+
 	Id64, err := result.LastInsertId()
 	item.Id = int(Id64)
 	return err

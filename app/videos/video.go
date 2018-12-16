@@ -10,5 +10,6 @@ type Video struct {
 	Language    string
 	File        string
 	Playlist    string
+	TitleGen    bool
 	IpAddress   string
 }

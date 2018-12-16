@@ -22,5 +22,8 @@
 		"SECRET_KEY": "",
 		"REGION": "us-west-1",
 		"bucket": ""
+	},
+	"keywordtool.io": {
+		"API_KEY": ""
 	}
 }

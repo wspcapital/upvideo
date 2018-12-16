@@ -2,6 +2,7 @@ package accounts
 
 import (
 	"database/sql"
+	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/kataras/iris/core/errors"
 	"log"
@@ -127,7 +128,7 @@ func (this *Repository) Insert(item *Account) error {
 		int32(time.Now().Unix()),
 	)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("SQL Insert err: \n%v\n", err)
 		return err
 	}
 

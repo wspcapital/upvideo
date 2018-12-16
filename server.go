@@ -6,6 +6,8 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure/web"
+	"bitbucket.org/marketingx/upvideo/app/services/keywordtool"
+	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
 	"bitbucket.org/marketingx/upvideo/app/videos"
 	"bitbucket.org/marketingx/upvideo/app/videos/titles"
 	"bitbucket.org/marketingx/upvideo/aws"
@@ -49,13 +51,15 @@ func main() {
 	fmt.Printf("config: %v\n", cfg)
 
 	webServer := &web.WebServer{
-		UserService:    usr.NewUserService(infrastructure.NewUserRepository(db)),
-		SessionService: session.NewService(sessionRepository),
-		VideoService:   videos.NewService(videos.NewRepository(db)),
-		AccountService: accounts.NewService(accounts.NewRepository(db)),
-		TitleService:   titles.NewService(titles.NewRepository(db)),
-		Params:         cfg.WebServer,
-		Config:         cfg,
+		UserService:        usr.NewUserService(infrastructure.NewUserRepository(db)),
+		SessionService:     session.NewService(sessionRepository),
+		VideoService:       videos.NewService(videos.NewRepository(db)),
+		AccountService:     accounts.NewService(accounts.NewRepository(db)),
+		TitleService:       titles.NewService(titles.NewRepository(db)),
+		KeywordtoolService: keywordtool.NewService(&cfg.Keywordtool),
+		RapidtagsService:   rapidtags.NewService(),
+		Params:             cfg.WebServer,
+		Config:             cfg,
 	}
 
 	webServer.Start()
