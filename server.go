@@ -6,6 +6,8 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure/web"
+	"bitbucket.org/marketingx/upvideo/app/jobs"
+	"bitbucket.org/marketingx/upvideo/app/jobworker"
 	"bitbucket.org/marketingx/upvideo/app/services/keywordtool"
 	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
 	"bitbucket.org/marketingx/upvideo/app/videos"
@@ -50,12 +52,17 @@ func main() {
 	}
 	fmt.Printf("config: %v\n", cfg)
 
+	titlesService := titles.NewService(titles.NewRepository(db))
+	videoService := videos.NewService(videos.NewRepository(db))
+	jobsService := jobs.NewService(jobs.NewRepository(db))
+
 	webServer := &web.WebServer{
 		UserService:        usr.NewUserService(infrastructure.NewUserRepository(db)),
 		SessionService:     session.NewService(sessionRepository),
-		VideoService:       videos.NewService(videos.NewRepository(db)),
+		VideoService:       videoService,
 		AccountService:     accounts.NewService(accounts.NewRepository(db)),
-		TitleService:       titles.NewService(titles.NewRepository(db)),
+		TitleService:       titlesService,
+		JobService:         jobsService,
 		KeywordtoolService: keywordtool.NewService(&cfg.Keywordtool),
 		RapidtagsService:   rapidtags.NewService(),
 		Params:             cfg.WebServer,
@@ -64,6 +71,13 @@ func main() {
 
 	webServer.Start()
 
+	jobWorkerService := &jobworker.Service{
+		VideoService: videoService,
+		TitleService: titlesService,
+		JobService:   jobsService,
+		Config:       cfg,
+	}
+	jobWorkerService.Run()
 }
 
 func initDbTables(db *sql.DB) {

@@ -114,21 +114,15 @@ func (this *WebServer) accountCreate(c *gin.Context) {
 		operationId       string
 		clientSecretsPath string
 	)
-	targetDir := path.Join(this.Config.YoutubeUploaderPath, "/secrets")
 
 	// look for unique operationId
 	for {
 		operationId = utils.RandomString(32)
-		clientSecretsPath = path.Join(targetDir, "client_secrets_"+operationId+".json")
+		clientSecretsPath = path.Join(this.Config.YoutubeUploaderDirs.SecretsDir, "client_secrets_"+operationId+".json")
 
 		if _, err := os.Stat(clientSecretsPath); os.IsNotExist(err) {
 			break
 		}
-	}
-
-	if err = os.MkdirAll(targetDir, os.ModePerm); err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
 	}
 
 	if err = c.SaveUploadedFile(file, clientSecretsPath); err != nil {
@@ -202,16 +196,8 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 		return
 	}
 
-	tokensDir := path.Join(this.Config.YoutubeUploaderPath, "/tokens")
-	tokenPath := path.Join(tokensDir, "request_"+req.OperationId+".token.json")
-	if err = os.MkdirAll(tokensDir, os.ModePerm); err != nil {
-		fmt.Println("\n create tokenPath Error: ", err.Error())
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	secretsDir := path.Join(this.Config.YoutubeUploaderPath, "/secrets")
-	clientSecretsPath := path.Join(secretsDir, "client_secrets_"+req.OperationId+".json")
+	tokenPath := path.Join(this.Config.YoutubeUploaderDirs.TokensDir, "request_"+req.OperationId+".token.json")
+	clientSecretsPath := path.Join(this.Config.YoutubeUploaderDirs.SecretsDir, "client_secrets_"+req.OperationId+".json")
 
 	err = youtubeauth.VerifyCode(req.ConfirmCode, tokenPath, clientSecretsPath)
 	if err != nil {

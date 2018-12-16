@@ -58,6 +58,10 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 		_titles.POST("/", this.titleCreate)
 		_titles.PUT("/:id", this.titleUpdate)
 		_titles.DELETE("/:id", this.titleDelete)
+
+		_titles.POST("/:id/convert", this.titleConvert)
+		_titles.POST("/:id/publish", this.titlePublish)
+		_titles.GET("/:id/status", this.titleStatus)
 	}
 
 }

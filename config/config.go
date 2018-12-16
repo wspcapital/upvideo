@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -19,6 +20,7 @@ type Config struct {
 	YoutubeUploaderCmd  string `json:"youtubeuploader_cmd"`
 	TestVideoPath       string `json:"testvideo"`
 	TestVideoMetaPath   string `json:"testvideo_meta"`
+	YoutubeUploaderDirs YoutubeUploaderDirs
 	Session             SessionConfig
 	WebServer           WebServerParams
 	AWS                 AWSParams         `json:"AWS"`
@@ -36,6 +38,12 @@ func ReadConfig(filename string) Config {
 	}
 
 	resolveRelativePaths(&configuration)
+
+	ytPaths := &YoutubeUploaderDirs{}
+	err = ytPaths.resolvePaths(configuration.YoutubeUploaderPath)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return configuration
 }

@@ -9,6 +9,7 @@ type Video struct {
 	Category    string
 	Language    string
 	File        string
+	TmpFile     string
 	Playlist    string
 	TitleGen    bool
 	IpAddress   string

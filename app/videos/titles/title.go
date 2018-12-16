@@ -10,5 +10,7 @@ type Title struct {
 	Posted     bool
 	Converted  bool
 	Pending    bool
+	FrameRate  int
+	Resolution int
 	IpAddress  string
 }

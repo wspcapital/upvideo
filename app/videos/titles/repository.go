@@ -13,7 +13,7 @@ type Repository struct {
 }
 
 func (this *Repository) FindAll(params Params) (items []*Title, err error) {
-	query := sq.Select("Id", "UserId", "VideoId", "Title", "Tags", "File", "Posted", "Converted", "Pending", "IpAddress").From("titles")
+	query := sq.Select("Id", "UserId", "VideoId", "Title", "Tags", "File", "Posted", "Converted", "Pending", "FrameRate", "Resolution", "IpAddress").From("titles")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
@@ -57,6 +57,8 @@ func (this *Repository) FindAll(params Params) (items []*Title, err error) {
 			&title.Posted,
 			&title.Converted,
 			&title.Pending,
+			&title.FrameRate,
+			&title.Resolution,
 			&title.IpAddress,
 		)
 
@@ -67,7 +69,7 @@ func (this *Repository) FindAll(params Params) (items []*Title, err error) {
 }
 
 func (this *Repository) Insert(item *Title) error {
-	result, err := this.db.Exec("INSERT INTO titles(UserId, VideoId, Title, Tags, File, Posted, Converted, Pending, IpAddress, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	result, err := this.db.Exec("INSERT INTO titles(UserId, VideoId, Title, Tags, File, Posted, Converted, Pending, FrameRate, Resolution, IpAddress, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		item.UserId,
 		item.VideoId,
 		item.Title,
@@ -76,6 +78,8 @@ func (this *Repository) Insert(item *Title) error {
 		item.Posted,
 		item.Converted,
 		item.Pending,
+		item.FrameRate,
+		item.Resolution,
 		item.IpAddress,
 		int32(time.Now().Unix()),
 		int32(time.Now().Unix()),
@@ -92,7 +96,7 @@ func (this *Repository) Insert(item *Title) error {
 }
 
 func (this *Repository) Update(item *Title) error {
-	_, err := this.db.Exec("UPDATE titles SET UserId=?, VideoId=?, Title=?, Tags=?, File=?, Posted=?, Converted=?, Pending=?, IpAddress=? WHERE Id=?",
+	_, err := this.db.Exec("UPDATE titles SET UserId=?, VideoId=?, Title=?, Tags=?, File=?, Posted=?, Converted=?, Pending=?, FrameRate=?, Resolution=?, IpAddress=? WHERE Id=?",
 		item.UserId,
 		item.VideoId,
 		item.Title,
@@ -101,6 +105,8 @@ func (this *Repository) Update(item *Title) error {
 		item.Posted,
 		item.Converted,
 		item.Pending,
+		item.FrameRate,
+		item.Resolution,
 		item.IpAddress,
 		item.Id,
 	)

@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/accounts"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
+	"bitbucket.org/marketingx/upvideo/app/jobs"
 	"bitbucket.org/marketingx/upvideo/app/services/keywordtool"
 	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
 	"bitbucket.org/marketingx/upvideo/app/videos"
@@ -25,6 +26,7 @@ type WebServer struct {
 	VideoService       *videos.Service
 	AccountService     *accounts.Service
 	TitleService       *titles.Service
+	JobService         *jobs.Service
 	KeywordtoolService *keywordtool.Service
 	RapidtagsService   *rapidtags.Service
 }

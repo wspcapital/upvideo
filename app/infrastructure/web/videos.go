@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/videos"
 	"bitbucket.org/marketingx/upvideo/app/videos/titles"
 	"bitbucket.org/marketingx/upvideo/aws"
+	"bitbucket.org/marketingx/upvideo/utils"
 	"bitbucket.org/marketingx/upvideo/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -214,6 +215,8 @@ func (this *WebServer) VideoGenerateTitles(c *gin.Context) {
 		return
 	}
 
+	nextFrameRate := utils.NewNextFrameRateService()
+
 	//var items []*titles.Title
 	titlesCreated := 0
 	for _, keyword := range keywords {
@@ -228,15 +231,17 @@ func (this *WebServer) VideoGenerateTitles(c *gin.Context) {
 		}
 
 		_title := &titles.Title{
-			UserId:    this.getUser(c).Id,
-			VideoId:   video.Id,
-			Title:     keyword,
-			Tags:      strings.Join(tags, ","),
-			File:      "",
-			Posted:    false,
-			Converted: false,
-			Pending:   false,
-			IpAddress: c.ClientIP(),
+			UserId:     this.getUser(c).Id,
+			VideoId:    video.Id,
+			Title:      keyword,
+			Tags:       strings.Join(tags, ","),
+			File:       "",
+			Posted:     false,
+			Converted:  false,
+			Pending:    false,
+			FrameRate:  nextFrameRate.FrameRate,
+			Resolution: nextFrameRate.Resolution,
+			IpAddress:  c.ClientIP(),
 		}
 
 		err = this.TitleService.Insert(_title)
@@ -245,6 +250,7 @@ func (this *WebServer) VideoGenerateTitles(c *gin.Context) {
 			continue
 		}
 
+		nextFrameRate.NextFrameRate()
 		//items = append(items, _title)
 		titlesCreated++
 	}
