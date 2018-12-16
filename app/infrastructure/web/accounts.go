@@ -237,6 +237,15 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 		return
 	}
 
+	user := this.getUser(c)
+	user.AccountId = _account.Id
+	err = this.UserService.Update(user)
+	if err != nil {
+		fmt.Println("\n this.UserService.Update Error: ", err.Error())
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
 	c.JSON(200, gin.H{"uploaded": "succcessfull", "url": url})
 }
 
@@ -311,4 +320,31 @@ func (this *WebServer) accountDelete(c *gin.Context) {
 
 	this.AccountService.Delete(_account)
 	c.Status(200)
+}
+
+func (this *WebServer) accountSelect(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+	if err != nil {
+		_ = c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	_account, err := this.AccountService.FindOne(accounts.Params{
+		Id:     int(id),
+		UserId: this.getUser(c).Id,
+	})
+	if err != nil {
+		_ = c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	user := this.getUser(c)
+	user.AccountId = _account.Id
+	err = this.UserService.Update(user)
+	if err != nil {
+		fmt.Println("\n this.UserService.Update Error: ", err.Error())
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Status(http.StatusOK)
 }

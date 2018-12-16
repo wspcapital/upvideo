@@ -3,6 +3,7 @@ package videos
 type Video struct {
 	Id          int
 	UserId      int
+	AccountId   int
 	Title       string
 	Description string
 	Tags        string

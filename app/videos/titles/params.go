@@ -7,6 +7,8 @@ type Params struct {
 	Title      string
 	Tags       string
 	File       string
+	TmpFile    string
+	YoutubeId  string
 	Posted     bool
 	Converted  bool
 	Pending    bool

@@ -55,12 +55,13 @@ func main() {
 	titlesService := titles.NewService(titles.NewRepository(db))
 	videoService := videos.NewService(videos.NewRepository(db))
 	jobsService := jobs.NewService(jobs.NewRepository(db))
+	accountService := accounts.NewService(accounts.NewRepository(db))
 
 	webServer := &web.WebServer{
 		UserService:        usr.NewUserService(infrastructure.NewUserRepository(db)),
 		SessionService:     session.NewService(sessionRepository),
 		VideoService:       videoService,
-		AccountService:     accounts.NewService(accounts.NewRepository(db)),
+		AccountService:     accountService,
 		TitleService:       titlesService,
 		JobService:         jobsService,
 		KeywordtoolService: keywordtool.NewService(&cfg.Keywordtool),
@@ -69,15 +70,16 @@ func main() {
 		Config:             cfg,
 	}
 
-	webServer.Start()
-
 	jobWorkerService := &jobworker.Service{
-		VideoService: videoService,
-		TitleService: titlesService,
-		JobService:   jobsService,
-		Config:       cfg,
+		VideoService:   videoService,
+		TitleService:   titlesService,
+		JobService:     jobsService,
+		AccountService: accountService,
+		Config:         &cfg,
 	}
-	jobWorkerService.Run()
+	jobWorkerService.Start()
+
+	webServer.Start()
 }
 
 func initDbTables(db *sql.DB) {

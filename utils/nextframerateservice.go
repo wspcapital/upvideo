@@ -17,7 +17,7 @@ func NewNextFrameRateService() *NextFrameRateService {
 
 func (this *NextFrameRateService) NextFrameRate() *NextFrameRateService {
 	this.frameRateIndex++
-	if this.frameRateIndex > len(frameRates) {
+	if this.frameRateIndex > len(frameRates)-1 {
 		this.frameRateIndex = 0
 		this.Resolution += 16
 	}

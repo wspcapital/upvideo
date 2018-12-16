@@ -1,6 +1,8 @@
 package videos
 
-import "errors"
+import (
+	"database/sql"
+)
 
 type Service struct {
 	repo *Repository
@@ -14,7 +16,7 @@ func (this *Service) FindOne(params Params) (*Video, error) {
 		return nil, err
 	}
 	if len(_video) == 0 {
-		return nil, errors.New("found no matching video")
+		return nil, sql.ErrNoRows
 	}
 	return _video[0], nil
 }
@@ -24,9 +26,8 @@ func (this *Service) FindAll(params Params) ([]*Video, error) {
 }
 
 func (this *Service) Insert(item *Video) error {
-     return this.repo.Insert(item)
+	return this.repo.Insert(item)
 }
-
 
 func (this *Service) Update(item *Video) error {
 	return this.repo.Update(item)

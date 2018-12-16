@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `Email` varchar(50) NOT NULL,
   `PasswordHash` varchar(32) NOT NULL,
   `APIKey` varchar(36) NOT NULL,
+  `AccountId` int(11) NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
@@ -18,7 +19,8 @@ CREATE TABLE IF NOT EXISTS `session` (
 
 CREATE TABLE IF NOT EXISTS `videos` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `UserId` int(11) NOT NULL, 
+  `UserId` int(11) NOT NULL,
+  `AccountId` int(11) NOT NULL,
   `Title` varchar(250) NOT NULL, 
   `Description` text NOT NULL, 
   `Tags` varchar(500) NULL, 
@@ -35,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `videos` (
   `IpAddress` varchar(250) NULL, 
   `Status` bool NOT NULL DEFAULT TRUE,
   PRIMARY KEY (`Id`),
-  KEY `UserId` (`UserId`)
+  KEY `videos_UserId` (`UserId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
@@ -59,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   PRIMARY KEY (`Id`),
   UNIQUE (`UserId`, `ClientId`),
   UNIQUE (`OperationId`),
-  KEY `UserId` (`UserId`)
+  KEY `accounts_UserId` (`UserId`)
   ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
@@ -69,17 +71,19 @@ CREATE TABLE IF NOT EXISTS `titles` (
   `VideoId` int(11) NOT NULL,
   `Title` varchar(250) NOT NULL,
   `Tags` varchar(500) NOT NULL,
-  `File` varchar(250) NOT NULL,
+  `File` varchar(255) NOT NULL,
+  `TmpFile` varchar(255) NULL,
+  `YoutubeId` varchar(255) NULL,
   `Posted` bool NOT NULL DEFAULT FALSE,
   `Converted` bool NOT NULL DEFAULT FALSE,
   `Pending` bool NOT NULL DEFAULT FALSE,
   `FrameRate` int(2) NULL DEFAULT 25,
-  `Resolution` int(5) NULL DEFAULT 1280
+  `Resolution` int(5) NULL DEFAULT 1280,
   `IpAddress` varchar(32) NULL,
   `Created_at` int(11) NOT NULL,
   `Updated_at` int(11) NULL, 
   PRIMARY KEY (`Id`),
-  KEY `UserId` (`UserId`)
+  KEY `titles_UserId` (`UserId`)
   ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `jobs` (
@@ -92,8 +96,8 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `Created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
-  KEY `UserId` (`UserId`),
-  UNIQUE (`RelatedId`, `Type`),
+  KEY `jobs_UserId` (`UserId`),
+  UNIQUE (`RelatedId`, `Type`)
   ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `failed_jobs` (
@@ -101,12 +105,12 @@ CREATE TABLE IF NOT EXISTS `failed_jobs` (
   `UserId` int(11) NOT NULL,
   `RelatedId` int(11) NOT NULL,
   `Type` varchar(250) NOT NULL,
-  `ProcessId` int(11) NULL,
+  `ProcessId` int(11) NOT NULL DEFAULT 0,
   `Error` text NULL,
   `Created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
-  KEY `UserId` (`UserId`),
-  UNIQUE (`RelatedId`, `Type`),
+  KEY `failed_jobs_UserId` (`UserId`),
+  UNIQUE (`RelatedId`, `Type`)
   ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 

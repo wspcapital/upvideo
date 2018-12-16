@@ -1,7 +1,7 @@
 package titles
 
 import (
-	"errors"
+	"database/sql"
 )
 
 type Service struct {
@@ -16,7 +16,7 @@ func (this *Service) FindOne(params Params) (*Title, error) {
 		return nil, err
 	}
 	if len(_title) == 0 {
-		return nil, errors.New("found no matching title")
+		return nil, sql.ErrNoRows
 	}
 	return _title[0], nil
 }

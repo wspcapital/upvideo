@@ -65,7 +65,7 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 	}
 	defer fileReader.Close()
 
-	userId := this.getUser(c).Id
+	user := this.getUser(c)
 	fileName := filepath.Base(file.Filename)
 
 	req := &videos.Video{
@@ -85,6 +85,8 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 	}
 
 	video := &videos.Video{}
+	video.UserId = user.Id
+	video.AccountId = user.AccountId
 	video.Title = req.Title
 	video.Description = req.Description
 	video.Tags = req.Tags
@@ -93,14 +95,13 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 	video.File = fileName
 	video.Playlist = req.Playlist
 	video.IpAddress = req.IpAddress
-	video.UserId = userId
 	err = this.VideoService.Insert(video)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	targetPath := fmt.Sprintf("/%d/%d/%s", userId, video.Id, fileName)
+	targetPath := fmt.Sprintf("/%d/%d/%s", user.Id, video.Id, fileName)
 	location, err := aws.UploadS3File(targetPath, fileReader)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)

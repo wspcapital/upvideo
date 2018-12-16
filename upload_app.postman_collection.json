@@ -386,6 +386,163 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/videos/:id/gen_titles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8fe913da-ef0e-4f19-8235-1b3ae8e11d37",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "multipart/form-data"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Title",
+									"value": "Video title",
+									"type": "text"
+								},
+								{
+									"key": "Description",
+									"value": "Video description",
+									"type": "text"
+								},
+								{
+									"key": "Tags",
+									"value": "video tags",
+									"type": "text"
+								},
+								{
+									"key": "Category",
+									"value": "video category",
+									"type": "text"
+								},
+								{
+									"key": "Language",
+									"value": "AA",
+									"type": "text"
+								},
+								{
+									"key": "File",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "Playlist",
+									"value": "playlist_dadas",
+									"type": "text"
+								},
+								{
+									"key": "IpAddress",
+									"value": "dasdasd",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/videos/:id/gen_titles",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"videos",
+								":id",
+								"gen_titles"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "18"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/videos/:id/get_titles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/videos/:id/get_titles?limit=0&offset=0",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"videos",
+								":id",
+								"get_titles"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "0"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "18"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -549,7 +706,7 @@
 								},
 								{
 									"key": "confirm_code",
-									"value": "4/swB_0KQmZq0D_YpYeXq41DLE_xZkQeQQy8ImmeEoXIoeEho4A7nJpUU",
+									"value": "4/tADWv6k_v4UD9NtVAKHRSPvMnx1PVkkexHPS9SArtkJmSg6RUaCHpbs",
 									"type": "text"
 								}
 							]
@@ -583,7 +740,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "mz4R49AgL2aZoe2p28w9XKXx",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -595,7 +752,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/accounts/",
+							"raw": "127.0.0.1:3000/api/accounts/:id",
 							"host": [
 								"127",
 								"0",
@@ -606,7 +763,13 @@
 							"path": [
 								"api",
 								"accounts",
-								""
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -648,6 +811,53 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/accounts/:id/select",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/accounts/:id/select",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"accounts",
+								":id",
+								"select"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -657,6 +867,16 @@
 				{
 					"name": "127.0.0.1:3000/api/titles/",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -664,7 +884,19 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": ""
+							"raw": "127.0.0.1:3000/api/titles/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"titles",
+								""
+							]
 						}
 					},
 					"response": []
@@ -701,6 +933,138 @@
 								"api",
 								"titles",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/titles/:id/status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/titles/:id/status",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"titles",
+								":id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/titles/:id/convert",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/titles/:id/convert",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"titles",
+								":id",
+								"convert"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/titles/:id/publish",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/titles/:id/publish",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"titles",
+								":id",
+								"publish"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
 							]
 						}
 					},

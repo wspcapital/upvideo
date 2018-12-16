@@ -1,6 +1,8 @@
 package accounts
 
-import "errors"
+import (
+	"database/sql"
+)
 
 type Service struct {
 	repo *Repository
@@ -14,7 +16,7 @@ func (this *Service) FindOne(params Params) (*Account, error) {
 		return nil, err
 	}
 	if len(_account) == 0 {
-		return nil, errors.New("found no matching accounts")
+		return nil, sql.ErrNoRows
 	}
 	return _account[0], nil
 }

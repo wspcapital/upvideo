@@ -39,8 +39,8 @@ func ReadConfig(filename string) Config {
 
 	resolveRelativePaths(&configuration)
 
-	ytPaths := &YoutubeUploaderDirs{}
-	err = ytPaths.resolvePaths(configuration.YoutubeUploaderPath)
+	configuration.YoutubeUploaderDirs = YoutubeUploaderDirs{}
+	err = configuration.YoutubeUploaderDirs.resolvePaths(configuration.YoutubeUploaderPath)
 	if err != nil {
 		log.Fatal(err)
 	}

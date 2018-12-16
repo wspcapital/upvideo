@@ -12,7 +12,7 @@ type Repository struct {
 }
 
 func (this *Repository) FindAll(params Params) (items []*Video, err error) {
-	query := sq.Select("Id", "UserId", "Title", "Description", "Tags", "Category", "Language", "File", "TmpFile", "Playlist", "Title_gen", "IpAddress").From("videos")
+	query := sq.Select("Id", "UserId", "AccountId", "Title", "Description", "Tags", "Category", "Language", "File", "TmpFile", "Playlist", "Title_gen", "IpAddress").From("videos")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
@@ -44,6 +44,7 @@ func (this *Repository) FindAll(params Params) (items []*Video, err error) {
 		rows.Scan(
 			&video.Id,
 			&video.UserId,
+			&video.AccountId,
 			&video.Title,
 			&video.Description,
 			&video.Tags,
@@ -62,8 +63,9 @@ func (this *Repository) FindAll(params Params) (items []*Video, err error) {
 }
 
 func (this *Repository) Insert(item *Video) error {
-	result, err := this.db.Exec("INSERT INTO videos(UserId, Title, Description, Tags, Category, `Language`, File, TmpFile, Playlist, IpAddress, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	result, err := this.db.Exec("INSERT INTO videos(UserId, AccountId, Title, Description, Tags, Category, `Language`, File, TmpFile, Playlist, IpAddress, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		item.UserId,
+		item.AccountId,
 		item.Title,
 		item.Description,
 		item.Tags,
@@ -88,7 +90,7 @@ func (this *Repository) Insert(item *Video) error {
 }
 
 func (this *Repository) Update(item *Video) error {
-	_, err := this.db.Exec("UPDATE videos SET UserId=?, Title=?, Description=?, Tags=?, Category=?, `Language`=?, File=?, TmpFile=?, Playlist=?, Title_gen=?, IpAddress=? WHERE Id=?", item.UserId, item.Title, item.Description, item.Tags, item.Category, item.Language, item.File, item.TmpFile, item.Playlist, item.TitleGen, item.IpAddress, item.Id)
+	_, err := this.db.Exec("UPDATE videos SET UserId=?, AccountId=?, Title=?, Description=?, Tags=?, Category=?, `Language`=?, File=?, TmpFile=?, Playlist=?, Title_gen=?, IpAddress=? WHERE Id=?", item.UserId, item.AccountId, item.Title, item.Description, item.Tags, item.Category, item.Language, item.File, item.TmpFile, item.Playlist, item.TitleGen, item.IpAddress, item.Id)
 	return err
 }
 

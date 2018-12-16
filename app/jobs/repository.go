@@ -83,7 +83,7 @@ func (this *Repository) Insert(item *Job) error {
 }
 
 func (this *Repository) Update(item *Job) error {
-	_, err := this.db.Exec("UPDATE jobs SET UserId=?, ReletedId=?, `Type`=?, ProcessId=?, Progress=?, Updated_at=NOW() WHERE Id=?",
+	_, err := this.db.Exec("UPDATE jobs SET UserId=?, RelatedId=?, `Type`=?, ProcessId=?, Progress=?, Updated_at=NOW() WHERE Id=?",
 		item.UserId,
 		item.RelatedId,
 		item.Type,
@@ -95,7 +95,7 @@ func (this *Repository) Update(item *Job) error {
 }
 
 func (this *Repository) Delete(item *Job) error {
-	_, err := this.db.Exec("DELETE FROM job WHERE Id=?", item.Id)
+	_, err := this.db.Exec("DELETE FROM jobs WHERE Id=?", item.Id)
 	return err
 }
 
@@ -167,6 +167,16 @@ func (this *Repository) InsertFailedJob(item *FailedJob) error {
 		log.Println(err)
 	}
 	item.Id = int(Id64)
+	return err
+}
+
+func (this *Repository) DeleteFailedJob(item *FailedJob) error {
+	_, err := this.db.Exec("DELETE FROM failed_jobs WHERE Id=?", item.Id)
+	return err
+}
+
+func (this *Repository) DeleteFailedJobByType(item *FailedJob) error {
+	_, err := this.db.Exec("DELETE FROM failed_jobs WHERE RelatedId=? AND `Type`=?", item.RelatedId, item.Type)
 	return err
 }
 

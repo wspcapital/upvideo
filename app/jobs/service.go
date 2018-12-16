@@ -3,6 +3,7 @@ package jobs
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 )
 
 type Service struct {
@@ -46,14 +47,14 @@ func (this *Service) CheckJobStatus(UserId int, RelatedId int, Type string) (sta
 		if err != nil && err != sql.ErrNoRows {
 			return "", err
 		}
-		if err == sql.ErrNoRows {
+		if len(fJob) == 0 || err == sql.ErrNoRows {
 			return "done", nil
 		}
 
-		return "failed", errors.New("Failed reason: " + fJob[0].Error)
+		return "failed", errors.New(fmt.Sprintf("Failed reason: %s", fJob[0].Error))
 	}
 
-	if job.ProcessId == "" {
+	if job.ProcessId == 0 {
 		return "queued", nil
 	}
 
@@ -63,14 +64,14 @@ func (this *Service) CheckJobStatus(UserId int, RelatedId int, Type string) (sta
 func (this *Service) FindOne(params Params) (*Job, error) {
 	params.Limit = 1
 	params.Offset = 0
-	_account, err := this.repo.FindAll(params)
+	_job, err := this.repo.FindAll(params)
 	if err != nil {
 		return nil, err
 	}
-	if len(_account) == 0 {
-		return nil, errors.New("found no matching accounts")
+	if len(_job) == 0 {
+		return nil, sql.ErrNoRows
 	}
-	return _account[0], nil
+	return _job[0], nil
 }
 
 func (this *Service) FindAll(params Params) ([]*Job, error) {
@@ -89,12 +90,41 @@ func (this *Service) Delete(item *Job) error {
 	return this.repo.Delete(item)
 }
 
+func (this *Service) FindOneFailedJob(params Params) (*FailedJob, error) {
+	params.Limit = 1
+	params.Offset = 0
+	_job, err := this.repo.FindAllFailedJobs(params)
+	if err != nil {
+		return nil, err
+	}
+	if len(_job) == 0 {
+		return nil, sql.ErrNoRows
+	}
+	return _job[0], nil
+}
+
 func (this *Service) JobFailed(item *Job, errorMessage string) (err error) {
 	err = this.repo.Delete(item)
 	if err != nil {
 		return
 	}
-	return this.repo.InsertFailedJob(item.ConvertToFailedJob(errorMessage))
+
+	failedJob := item.ConvertToFailedJob(errorMessage)
+
+	_ = this.repo.DeleteFailedJobByType(failedJob)
+	return this.repo.InsertFailedJob(failedJob)
+}
+
+func (this *Service) JobCompleted(item *Job) (err error) {
+	err1 := this.repo.Delete(item)
+	err2 := this.repo.DeleteFailedJobByType(item.ConvertToFailedJob(""))
+
+	if err1 != nil || err2 != nil {
+		fmt.Printf("SQL error Delete Job id:'%d'.\n\tError1:\n%v\n\n\tError1:\n%v\n", item.Id, err1, err2)
+		err = errors.New("JobComplete error")
+	}
+
+	return
 }
 
 func NewService(repo *Repository) *Service {

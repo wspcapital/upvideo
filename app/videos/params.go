@@ -3,6 +3,7 @@ package videos
 type Params struct {
 	Id          int
 	UserId      int
+	AccountId   int
 	Title       string
 	Description string
 	Tags        string

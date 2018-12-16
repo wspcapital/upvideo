@@ -1,9 +1,9 @@
 package infrastructure
 
 import (
+	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
-	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"strconv"
 )
 
@@ -13,7 +13,7 @@ type UserRepository struct {
 
 func (this *UserRepository) FindAll(dto usr.UserSearchDto) (items []*usr.User, err error) {
 	var offset, limit uint64
-	query := sq.Select("Id", "Email", "PasswordHash", "APIKey").From("user")
+	query := sq.Select("Id", "Email", "PasswordHash", "APIKey", "AccountId").From("user")
 	if dto.Id != "" {
 		query = query.Where(sq.Eq{"Id": dto.Id})
 		query = query.Limit(1)
@@ -60,7 +60,7 @@ func (this *UserRepository) FindAll(dto usr.UserSearchDto) (items []*usr.User, e
 	}
 	for rows.Next() {
 		user := &usr.User{}
-		rows.Scan(&user.Id, &user.Email, &user.PasswordHash, &user.APIKey)
+		rows.Scan(&user.Id, &user.Email, &user.PasswordHash, &user.APIKey, &user.AccountId)
 		items = append(items, user)
 	}
 	rows.Close()
@@ -68,14 +68,14 @@ func (this *UserRepository) FindAll(dto usr.UserSearchDto) (items []*usr.User, e
 }
 
 func (this *UserRepository) Insert(item *usr.User) error {
-	result, err := this.db.Exec("INSERT INTO user(Email, PasswordHash, APIKey) VALUES(?, ?, ?)", item.Email, item.PasswordHash, item.APIKey)
+	result, err := this.db.Exec("INSERT INTO user(Email, PasswordHash, APIKey, AccountId) VALUES(?, ?, ?, ?)", item.Email, item.PasswordHash, item.APIKey, item.AccountId)
 	Id64, err := result.LastInsertId()
 	item.Id = int(Id64)
 	return err
 }
 
 func (this *UserRepository) Update(item *usr.User) error {
-	_, err := this.db.Exec("update user set Email=?, PasswordHash=?, APIKey=? where Id=?", item.Email, item.PasswordHash, item.Id, item.APIKey)
+	_, err := this.db.Exec("update user set Email=?, PasswordHash=?, APIKey=?, AccountId=? where Id=?", item.Email, item.PasswordHash, item.APIKey, item.AccountId, item.Id)
 	return err
 }
 
