@@ -260,3 +260,31 @@ func (this *WebServer) VideoGenerateTitles(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"total": titlesCreated})
 }
+
+func (this *WebServer) VideoGetTitles(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+	if err != nil {
+		_ = c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 32)
+	if err != nil {
+		limit = 0
+	}
+	offset, err := strconv.ParseInt(c.Query("offset"), 10, 32)
+	if err != nil {
+		offset = 0
+	}
+	items, err := this.TitleService.FindAll(titles.Params{
+		UserId:  this.getUser(c).Id,
+		VideoId: int(id),
+		Limit:   uint64(limit),
+		Offset:  uint64(offset),
+	})
+	if err != nil {
+		_ = c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"items": items, "total": len(items)})
+}

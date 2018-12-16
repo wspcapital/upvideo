@@ -34,6 +34,7 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 		videos.PUT("/:id", this.videoUpdate)
 		videos.DELETE("/:id", this.videoDelete)
 		videos.POST("/:id/gen_titles", this.VideoGenerateTitles)
+		videos.GET("/:id/get_titles", this.VideoGetTitles)
 	}
 
 	// accounts group api
