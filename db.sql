@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `PasswordHash` varchar(32) NOT NULL,
   `APIKey` varchar(36) NOT NULL,
   `AccountId` int(11) NOT NULL,
-  PRIMARY KEY (`Id`)
+  PRIMARY KEY (`Id`),
   UNIQUE (`Email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 

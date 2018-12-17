@@ -3,7 +3,7 @@ package usr
 type User struct {
 	Id           int
 	AccountId    int
-	Email        string `validate:"required,email"`
+	Email        string
 	PasswordHash string
 	APIKey       string
 }

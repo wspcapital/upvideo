@@ -44,18 +44,29 @@ func (this *WebServer) register(c *gin.Context) {
 	// 	return
 	// }
 
-	user := &usr.User{}
-	user.Email = c.PostForm("email")
-	user.PasswordHash = this.UserService.PasswordHash(c.PostForm("password"))
+	type UserRequest struct {
+		Email    string `validate:"required,email"`
+		Password string `validate:"required"`
+	}
+
+	req := &UserRequest{
+		Email:    c.PostForm("email"),
+		Password: c.PostForm("password"),
+	}
 
 	// validate user
-	err := validator.GetValidatorInstance().Struct(user)
+	err := validator.GetValidatorInstance().Struct(req)
 	if err != nil {
-		c.String(http.StatusBadRequest, "Email is not valid")
+		c.String(http.StatusBadRequest, "username or password not valid")
 		return
 	}
 
-	// check email exists
+	user := &usr.User{
+		Email:        req.Email,
+		PasswordHash: this.UserService.PasswordHash(req.Password),
+	}
+
+	// check user exists
 	userExists, err := this.UserService.CheckUserExists(user)
 	if err != nil {
 		fmt.Println("UserService.CheckUserExists: " + err.Error())
@@ -69,7 +80,7 @@ func (this *WebServer) register(c *gin.Context) {
 
 	err = this.UserService.Insert(user)
 	if err != nil {
-		c.AbortWithError(400, err)
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
@@ -79,7 +90,7 @@ func (this *WebServer) register(c *gin.Context) {
 	err = this.SessionService.Update(sess)
 	if err != nil {
 		fmt.Println(err)
-		c.JSON(500, gin.H{"error": "Could not create user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user"})
 	} else {
 		// err = this.InviteService.ClearInvite(inviteCode)
 		// if this.Params.InviteOnly && err != nil {
@@ -87,7 +98,7 @@ func (this *WebServer) register(c *gin.Context) {
 		// 	c.AbortWithError(500, err)
 		// 	return
 		// }
-		c.JSON(200, gin.H{"token": sess.Id})
+		c.JSON(http.StatusOK, gin.H{"token": sess.Id})
 	}
 
 }
