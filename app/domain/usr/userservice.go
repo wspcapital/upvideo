@@ -1,11 +1,11 @@
 package usr
 
 import (
+	"bitbucket.org/marketingx/upvideo/app/cookie"
+	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
-	"bitbucket.org/marketingx/upvideo/app/domain/session"
-	"bitbucket.org/marketingx/upvideo/app/cookie"
 )
 
 type UserService interface {
@@ -17,12 +17,16 @@ type UserService interface {
 	Login(email string, password string) (*User, error)
 	FindById(id string) (*User, error)
 	FindByKey(key string) (*User, error)
+	FindByEmail(email string) (*User, error)
+	CheckUserExists(user *User) (bool, error)
 }
 
 type userService struct {
 	repo           UserRepository
 	sessionService session.Service
 }
+
+var UserNotFound = errors.New("User not found")
 
 func (this *userService) FindAll(dto UserSearchDto) ([]*User, error) {
 	return this.repo.FindAll(dto)
@@ -34,7 +38,29 @@ func (this *userService) Login(email string, password string) (*User, error) {
 		return nil, err
 	}
 	if len(items) == 0 {
-		return nil, errors.New("User not found")
+		return nil, UserNotFound
+	}
+	return items[0], err
+}
+
+func (this *userService) CheckUserExists(user *User) (bool, error) {
+	_, err := this.FindByEmail(user.Email)
+	if err != nil {
+		if err == UserNotFound {
+			return false, nil
+		}
+	}
+
+	return true, err
+}
+
+func (this *userService) FindByEmail(email string) (*User, error) {
+	items, err := this.repo.FindAll(UserSearchDto{Email: email})
+	if err != nil {
+		return nil, err
+	}
+	if len(items) == 0 {
+		return nil, UserNotFound
 	}
 	return items[0], err
 }
@@ -45,7 +71,7 @@ func (this *userService) FindByKey(apiKey string) (*User, error) {
 		return nil, err
 	}
 	if len(items) == 0 {
-		return nil, errors.New("User not found")
+		return nil, UserNotFound
 	}
 	return items[0], err
 }
@@ -56,7 +82,7 @@ func (this *userService) FindById(id string) (*User, error) {
 		return nil, err
 	}
 	if len(items) == 0 {
-		return nil, errors.New("User not found")
+		return nil, UserNotFound
 	}
 	return items[0], err
 }

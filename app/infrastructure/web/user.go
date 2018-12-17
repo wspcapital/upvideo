@@ -51,7 +51,19 @@ func (this *WebServer) register(c *gin.Context) {
 	// validate user
 	err := validator.GetValidatorInstance().Struct(user)
 	if err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		c.String(http.StatusBadRequest, "Email is not valid")
+		return
+	}
+
+	// check email exists
+	userExists, err := this.UserService.CheckUserExists(user)
+	if err != nil {
+		fmt.Println("UserService.CheckUserExists: " + err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	if userExists {
+		c.String(http.StatusBadRequest, "Username already exists")
 		return
 	}
 
