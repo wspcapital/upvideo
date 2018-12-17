@@ -50,7 +50,6 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 		Category    string
 		Language    string
 		Playlist    string
-		IpAddress   string
 	}
 
 	file, err := c.FormFile("File")
@@ -75,7 +74,6 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 		Category:    c.PostForm("Category"),
 		Language:    c.PostForm("Language"),
 		Playlist:    c.PostForm("Playlist"),
-		IpAddress:   c.PostForm("IpAddress"),
 	}
 
 	err = validator.GetValidatorInstance().Struct(req)
@@ -94,7 +92,7 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 	video.Language = req.Language
 	video.File = fileName
 	video.Playlist = req.Playlist
-	video.IpAddress = req.IpAddress
+	video.IpAddress = c.ClientIP()
 	err = this.VideoService.Insert(video)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusInternalServerError, err)
@@ -144,7 +142,7 @@ func (this *WebServer) videoUpdate(c *gin.Context) {
 	video.Language = unsafe.Language
 	video.File = unsafe.File
 	video.Playlist = unsafe.Playlist
-	video.IpAddress = unsafe.IpAddress
+	video.IpAddress = c.ClientIP()
 
 	err = this.VideoService.Update(video)
 	if err != nil {

@@ -49,7 +49,7 @@ func (this *WebServer) titleCreate(c *gin.Context) {
 	_title.Posted = unsafe.Posted
 	_title.Converted = unsafe.Converted
 	_title.Pending = unsafe.Pending
-	_title.IpAddress = unsafe.IpAddress
+	_title.IpAddress = c.ClientIP()
 	log.Println(_title)
 
 	err := this.TitleService.Insert(_title)
@@ -86,7 +86,7 @@ func (this *WebServer) titleUpdate(c *gin.Context) {
 	_title.Posted = unsafe.Posted
 	_title.Converted = unsafe.Converted
 	_title.Pending = unsafe.Pending
-	_title.IpAddress = unsafe.IpAddress
+	_title.IpAddress = c.ClientIP()
 
 	err = this.TitleService.Update(_title)
 	if err != nil {
