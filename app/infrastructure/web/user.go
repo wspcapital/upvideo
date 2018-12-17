@@ -1,11 +1,13 @@
 package web
 
 import (
-	_"errors"
-	"github.com/gin-gonic/gin"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
-	"strconv"
+	"bitbucket.org/marketingx/upvideo/validator"
+	_ "errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 )
 
 type ProfileResponse struct {
@@ -45,8 +47,15 @@ func (this *WebServer) register(c *gin.Context) {
 	user := &usr.User{}
 	user.Email = c.PostForm("email")
 	user.PasswordHash = this.UserService.PasswordHash(c.PostForm("password"))
-	fmt.Println(user)
-	err := this.UserService.Insert(user)
+
+	// validate user
+	err := validator.GetValidatorInstance().Struct(user)
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		return
+	}
+
+	err = this.UserService.Insert(user)
 	if err != nil {
 		c.AbortWithError(400, err)
 		return
