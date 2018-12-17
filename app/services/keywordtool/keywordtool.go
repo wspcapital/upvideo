@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/config"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -31,6 +32,13 @@ type keywordtoolResponse struct {
 	Results map[string]interface{} `json:"results"`
 }
 
+type keywordtoolErrorResponse struct {
+	Error struct {
+		Message string `json:"message"`
+		Code    int    `json:"code"`
+	} `json:"error"`
+}
+
 func (this *Service) GetKeywords(keyword string) (items []string, err error) {
 	jsonReq, err := json.Marshal(keywordtoolRequest{
 		ApiKey:          this.APIParams.ApiKey,
@@ -52,14 +60,25 @@ func (this *Service) GetKeywords(keyword string) (items []string, err error) {
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		fmt.Printf("Keywordtool service respond with statusCode: \n%v\n", res.Status)
-	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Printf("Response body read error: \n%v\n", err)
 		return nil, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		fmt.Printf("Keywordtool service respond with statusCode: \n%v\n", res.Status)
+
+		var jsonRes keywordtoolErrorResponse
+		err = json.Unmarshal(body, &jsonRes)
+		if err != nil {
+			fmt.Printf("Response body parse error: \n%v\n", err)
+			return nil, err
+		}
+
+		fmt.Printf("Keywordtool service respond with Error: %s\nCode: %d\n", jsonRes.Error.Message, jsonRes.Error.Code)
+		return nil, errors.New("keywordstool respond with error")
 	}
 
 	var jsonRes keywordtoolResponse
@@ -69,11 +88,13 @@ func (this *Service) GetKeywords(keyword string) (items []string, err error) {
 		return nil, err
 	}
 
-	for _, value := range jsonRes.Results {
-		for _, value2 := range value.([]interface{}) {
-			data := value2.(map[string]interface{})
-			if keyword, ok := data["string"]; ok {
-				items = append(items, strings.TrimSpace(keyword.(string)))
+	if len(jsonRes.Results) > 0 {
+		for _, value := range jsonRes.Results {
+			for _, value2 := range value.([]interface{}) {
+				data := value2.(map[string]interface{})
+				if keyword, ok := data["string"]; ok {
+					items = append(items, strings.TrimSpace(keyword.(string)))
+				}
 			}
 		}
 	}
