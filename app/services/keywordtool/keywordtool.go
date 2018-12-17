@@ -69,8 +69,13 @@ func (this *Service) GetKeywords(keyword string) (items []string, err error) {
 		return nil, err
 	}
 
-	for keyword := range jsonRes.Results {
-		items = append(items, strings.TrimSpace(keyword))
+	for _, value := range jsonRes.Results {
+		for _, value2 := range value.([]interface{}) {
+			data := value2.(map[string]interface{})
+			if keyword, ok := data["string"]; ok {
+				items = append(items, strings.TrimSpace(keyword.(string)))
+			}
+		}
 	}
 
 	return
