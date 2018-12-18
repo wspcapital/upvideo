@@ -249,6 +249,301 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/forgot-password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b29c6223-c8ca-4633-b58c-aee9e3b4a9c1",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{my_email}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/forgot-password",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/restore-password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b29c6223-c8ca-4633-b58c-aee9e3b4a9c1",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{my_email}}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "DurQpb0NdOADDg2eowHzJPTyf7MbLmGrsuDu",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/restore-password",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"restore-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "127.0.0.1:3000/api/change-password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b29c6223-c8ca-4633-b58c-aee9e3b4a9c1",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/change-password",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"change-password"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "email",
+										"value": "test3",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "test123456",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "127.0.0.1:3000/api/register",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "content-type, Authorization"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET, POST, PUT, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 06 Dec 2018 08:35:46 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "36"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"token\": \"LX58zkI2ggzX9iVitLU3ed_J\"\n}"
+						}
+					]
+				},
+				{
+					"name": "127.0.0.1:3000/api/reset-apikey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b29c6223-c8ca-4633-b58c-aee9e3b4a9c1",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token);",
+									"postman.setEnvironmentVariable(\"apikey\", jsonData.apikey);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "127.0.0.1:3000/api/reset-apikey",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"reset-apikey"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -420,51 +715,7 @@
 								"value": "multipart/form-data"
 							}
 						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "Title",
-									"value": "Video title",
-									"type": "text"
-								},
-								{
-									"key": "Description",
-									"value": "Video description",
-									"type": "text"
-								},
-								{
-									"key": "Tags",
-									"value": "video tags",
-									"type": "text"
-								},
-								{
-									"key": "Category",
-									"value": "video category",
-									"type": "text"
-								},
-								{
-									"key": "Language",
-									"value": "AA",
-									"type": "text"
-								},
-								{
-									"key": "File",
-									"type": "file",
-									"src": ""
-								},
-								{
-									"key": "Playlist",
-									"value": "playlist_dadas",
-									"type": "text"
-								},
-								{
-									"key": "IpAddress",
-									"value": "dasdasd",
-									"type": "text"
-								}
-							]
-						},
+						"body": {},
 						"url": {
 							"raw": "127.0.0.1:3000/api/videos/:id/gen_titles",
 							"host": [
@@ -483,7 +734,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "18"
+									"value": "20"
 								}
 							]
 						}
