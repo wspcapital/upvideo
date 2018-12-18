@@ -4,8 +4,12 @@ CREATE TABLE IF NOT EXISTS `user` (
   `PasswordHash` varchar(32) NOT NULL,
   `APIKey` varchar(36) NOT NULL,
   `AccountId` int(11) NOT NULL,
+  `ForgotPasswordToken` varchar(36) NULL,
+  `ForgotPasswordTokenExpiredAt` TIMESTAMP NULL,
   PRIMARY KEY (`Id`),
-  UNIQUE (`Email`)
+  UNIQUE (`Email`),
+  UNIQUE (`APIKey`),
+  KEY (`Email`, `ForgotPasswordToken`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 

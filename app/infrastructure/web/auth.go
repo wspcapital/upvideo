@@ -1,10 +1,10 @@
 package web
 
 import (
-	"errors"
-	"github.com/gin-gonic/gin"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
+	"errors"
+	"github.com/gin-gonic/gin"
 	"strings"
 )
 
@@ -27,6 +27,14 @@ func (this *WebServer) getSession(c *gin.Context) *session.Entity {
 		return entity
 	}
 	return nil
+}
+
+func (this *WebServer) removeSession(c *gin.Context) (err error) {
+	header := c.GetHeader("Authorization")
+	if strings.HasPrefix(header, "Bearer") {
+		err = this.SessionService.DeleteById(header[7:])
+	}
+	return err
 }
 
 func (this *WebServer) getUser(c *gin.Context) *usr.User {

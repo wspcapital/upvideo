@@ -25,6 +25,7 @@ type Config struct {
 	WebServer           WebServerParams
 	AWS                 AWSParams         `json:"AWS"`
 	Keywordtool         KeywordtoolParams `json:"keywordtool.io"`
+	Email               EmailParams       `json:"email"`
 }
 
 func ReadConfig(filename string) Config {
@@ -49,31 +50,35 @@ func ReadConfig(filename string) Config {
 }
 
 func resolveRelativePaths(conf *Config) {
+	// YoutubeUploader
 	p, err := filepath.Abs(conf.YoutubeUploaderPath)
 	if err != nil {
-		fmt.Sprintf("Can not resolve path: %s", conf.YoutubeUploaderPath)
+		fmt.Printf("Can not resolve path: %s", conf.YoutubeUploaderPath)
 	}
-
 	conf.YoutubeUploaderPath = p
 
 	p, err = filepath.Abs(conf.YoutubeUploaderCmd)
 	if err != nil {
-		fmt.Sprintf("Can not resolve path: %s", conf.YoutubeUploaderCmd)
+		fmt.Printf("Can not resolve path: %s", conf.YoutubeUploaderCmd)
 	}
-
 	conf.YoutubeUploaderCmd = p
 
 	p, err = filepath.Abs(conf.TestVideoPath)
 	if err != nil {
-		fmt.Sprintf("Can not resolve path: %s", conf.TestVideoPath)
+		fmt.Printf("Can not resolve path: %s", conf.TestVideoPath)
 	}
-
 	conf.TestVideoPath = p
 
 	p, err = filepath.Abs(conf.TestVideoMetaPath)
 	if err != nil {
-		fmt.Sprintf("Can not resolve path: %s", conf.TestVideoMetaPath)
+		fmt.Printf("Can not resolve path: %s", conf.TestVideoMetaPath)
 	}
-
 	conf.TestVideoMetaPath = p
+
+	// email templates
+	p, err = filepath.Abs(conf.Email.Templates.RestorePasswordPath)
+	if err != nil {
+		fmt.Printf("Can not resolve path: %s", conf.Email.Templates.RestorePasswordPath)
+	}
+	conf.Email.Templates.RestorePasswordPath = p
 }

@@ -1,8 +1,8 @@
 package infrastructure
 
 import (
-	"errors"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
+	"errors"
 	"sync"
 )
 
@@ -24,6 +24,11 @@ func (this *MemSession) FindById(id string) (item *session.Entity, err error) {
 
 func (this *MemSession) Update(item *session.Entity) error {
 	this.items[item.Id] = item
+	return nil
+}
+
+func (this *MemSession) DeleteById(id string) error {
+	delete(this.items, id)
 	return nil
 }
 

@@ -1,9 +1,9 @@
 package infrastructure
 
 import (
+	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"database/sql"
 	"encoding/json"
-	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"time"
 )
 
@@ -35,6 +35,11 @@ func (this *DbSession) Update(item *session.Entity) (err error) {
 	}
 	_, err = this.db.Exec("replace into session (id, data, updated_at) values (?, ?, ?)", item.Id, string(data), int32(time.Now().Unix()))
 	return
+}
+
+func (this *DbSession) DeleteById(id string) error {
+	_, err := this.db.Exec("DELETE FROM `session` WHERE id = ?", id)
+	return err
 }
 
 func NewDbSession(db *sql.DB) *DbSession {

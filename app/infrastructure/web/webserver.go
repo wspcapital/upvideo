@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/accounts"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
+	"bitbucket.org/marketingx/upvideo/app/email"
 	"bitbucket.org/marketingx/upvideo/app/jobs"
 	"bitbucket.org/marketingx/upvideo/app/services/keywordtool"
 	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
@@ -29,6 +30,7 @@ type WebServer struct {
 	JobService         *jobs.Service
 	KeywordtoolService *keywordtool.Service
 	RapidtagsService   *rapidtags.Service
+	EmailService       email.Service
 }
 
 func (this *WebServer) Start() {

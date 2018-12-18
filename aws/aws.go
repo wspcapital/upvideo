@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/aws/aws-sdk-go/service/ses"
 	"io"
 	"net/url"
 )
@@ -15,6 +16,15 @@ var (
 	aws_session *session.Session
 	params      *config.AWSParams
 )
+
+type AWSEmail struct {
+	From    string // From source email
+	To      string // To destination email(s)
+	Subject string // Subject text to send
+	Text    string // Text is the text body representation
+	HTML    string // HTMLBody is the HTML body representation
+	ReplyTo string // Reply-To email(s)
+}
 
 func AWSInitSession(conf config.Config) (err error) {
 	params = &conf.AWS
@@ -51,4 +61,53 @@ func UploadS3File(key string, reader io.Reader) (string, error) {
 	}
 
 	return location, err
+}
+
+func SendEmail(emailData AWSEmail) *ses.SendEmailOutput {
+	// start a new ses session
+	svc := ses.New(aws_session)
+
+	body := &ses.Body{}
+	if emailData.Text != "" || emailData.HTML == "" {
+		body.Text = &ses.Content{
+			Data:    aws.String(emailData.Text), // Required
+			Charset: aws.String("UTF-8"),
+		}
+	}
+	if emailData.HTML != "" {
+		body.Html = &ses.Content{
+			Data:    aws.String(emailData.HTML), // Required
+			Charset: aws.String("UTF-8"),
+		}
+	}
+
+	params := &ses.SendEmailInput{
+		Destination: &ses.Destination{ // Required
+			ToAddresses: []*string{
+				aws.String(emailData.To), // Required
+				// More values...
+			},
+		},
+		Message: &ses.Message{ // Required
+			Body: body, // Required
+			Subject: &ses.Content{ // Required
+				Data:    aws.String(emailData.Subject), // Required
+				Charset: aws.String("UTF-8"),
+			},
+		},
+		Source: aws.String(emailData.From), // Required
+
+		ReplyToAddresses: []*string{
+			aws.String(emailData.ReplyTo), // Required
+			// More values...
+		},
+	}
+
+	// send email
+	resp, err := svc.SendEmail(params)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return resp
 }

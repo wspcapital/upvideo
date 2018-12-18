@@ -54,7 +54,7 @@ func (this *WebServer) register(c *gin.Context) {
 		Password: c.PostForm("password"),
 	}
 
-	// validate user
+	// validate request
 	err := validator.GetValidatorInstance().Struct(req)
 	if err != nil {
 		c.String(http.StatusBadRequest, "username or password not valid")
@@ -100,7 +100,130 @@ func (this *WebServer) register(c *gin.Context) {
 		// }
 		c.JSON(http.StatusOK, gin.H{"token": sess.Id})
 	}
+}
 
+func (this *WebServer) userForgotPassword(c *gin.Context) {
+	type UserForgotPasswordRequest struct {
+		Email string `validate:"required,email"`
+	}
+
+	req := &UserForgotPasswordRequest{
+		Email: c.PostForm("email"),
+	}
+
+	// validate request
+	err := validator.GetValidatorInstance().Struct(req)
+	if err != nil {
+		c.String(http.StatusBadRequest, "email is not valid")
+		return
+	}
+
+	user, err := this.UserService.FindByEmail(req.Email)
+	if err != nil {
+		fmt.Println("UserService.FindByEmail: " + err.Error())
+		c.String(http.StatusBadRequest, "user not found")
+		return
+	}
+
+	err = this.UserService.SetForgotPasswordToken(user)
+	if err != nil {
+		fmt.Println("UserService.SetForgotPasswordToken: " + err.Error())
+		c.String(http.StatusInternalServerError, "Try again later")
+		return
+	}
+
+	err = this.EmailService.SendRestorePasswordEmail(user)
+	if err != nil {
+		fmt.Println("UserService.SetForgotPasswordToken: " + err.Error())
+		c.String(http.StatusInternalServerError, "Try again later")
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+func (this *WebServer) userRestorePassword(c *gin.Context) {
+	// process post request with new password
+	// restore form is in frontend
+	type UserRestorePasswordRequest struct {
+		Email    string `validate:"required,email"`
+		Token    string `validate:"required,alphanum,len=36"`
+		Password string `validate:"required"`
+	}
+
+	req := &UserRestorePasswordRequest{
+		Email:    c.PostForm("email"),
+		Token:    c.PostForm("token"),
+		Password: c.PostForm("password"),
+	}
+
+	// validate request
+	err := validator.GetValidatorInstance().Struct(req)
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	err = this.UserService.SetNewForgottenPassword(&usr.User{Email: req.Email, ForgotPasswordToken: req.Token, PasswordHash: this.UserService.PasswordHash(req.Password)})
+	if err != nil {
+		fmt.Println("UserService.SetNewForgottenPassword: " + err.Error())
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+func (this *WebServer) userChangePassword(c *gin.Context) {
+	type UserChangePasswordRequest struct {
+		Password string `validate:"required"`
+	}
+
+	req := &UserChangePasswordRequest{
+		Password: c.PostForm("password"),
+	}
+
+	// validate request
+	err := validator.GetValidatorInstance().Struct(req)
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	user := this.getUser(c)
+	user.PasswordHash = this.UserService.PasswordHash(req.Password)
+	err = this.UserService.Update(user)
+	if err != nil {
+		fmt.Println("UserService.Update: " + err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+func (this *WebServer) userResetApikey(c *gin.Context) {
+	user := this.getUser(c)
+	err := this.UserService.ResetApiKey(user)
+	if err != nil {
+		fmt.Println("UserService.Update: " + err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	err = this.removeSession(c)
+	if err != nil {
+		fmt.Println("removeSession: " + err.Error())
+	}
+
+	sess := this.SessionService.Create()
+	sess.Data["userId"] = strconv.Itoa(user.Id)
+	err = this.SessionService.Update(sess)
+	if err != nil {
+		fmt.Println("SessionService.Update: " + err.Error())
+	}
+
+	c.JSON(http.StatusOK, gin.H{"apikey": user.APIKey, "token": sess.Id})
 }
 
 func (this *WebServer) profile(c *gin.Context) {

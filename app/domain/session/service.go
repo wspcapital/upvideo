@@ -6,6 +6,7 @@ type Service interface {
 	FindById(id string) (*Entity, error)
 	Update(item *Entity) error
 	Create() *Entity
+	DeleteById(id string) error
 }
 
 type service struct {
@@ -31,6 +32,10 @@ func (this *service) Create() *Entity {
 		return nil
 	}
 	return item
+}
+
+func (this *service) DeleteById(id string) error {
+	return this.repo.DeleteById(id)
 }
 
 func NewService(repo Repository) Service {

@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/accounts"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
+	"bitbucket.org/marketingx/upvideo/app/email"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure/web"
 	"bitbucket.org/marketingx/upvideo/app/jobs"
@@ -66,6 +67,7 @@ func main() {
 		JobService:         jobsService,
 		KeywordtoolService: keywordtool.NewService(&cfg.Keywordtool),
 		RapidtagsService:   rapidtags.NewService(),
+		EmailService:       email.NewService(&cfg.Email),
 		Params:             cfg.WebServer,
 		Config:             cfg,
 	}

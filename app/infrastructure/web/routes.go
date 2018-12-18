@@ -17,6 +17,12 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 	})
 
 	r.POST("/api/login", this.todoLogin)
+	r.POST("/api/forgot-password", this.userForgotPassword)
+	r.POST("/api/restore-password", this.userRestorePassword)
+
+	r.POST("/api/change-password", this.requireAuth, this.userChangePassword)
+	r.POST("/api/reset-apikey", this.requireAuth, this.userResetApikey)
+
 	profile := r.Group("/api/profile")
 	profile.Use(this.requireAuth)
 	{

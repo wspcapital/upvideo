@@ -23,6 +23,13 @@
 		"REGION": "us-west-1",
 		"bucket": ""
 	},
+	"email": {
+		"from": "no-reply@amazon.com",
+		"reply": "realemail@amazon.com",
+		"templates": {
+			"restore_password": "./app/email/templates/restore-password.html"
+		}
+	},
 	"keywordtool.io": {
 		"API_KEY": ""
 	}

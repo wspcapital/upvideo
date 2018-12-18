@@ -1,11 +1,12 @@
 package usr
 
 import (
-	"bitbucket.org/marketingx/upvideo/app/cookie"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
+	"bitbucket.org/marketingx/upvideo/utils"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"fmt"
 )
 
 type UserService interface {
@@ -19,6 +20,9 @@ type UserService interface {
 	FindByKey(key string) (*User, error)
 	FindByEmail(email string) (*User, error)
 	CheckUserExists(user *User) (bool, error)
+	SetForgotPasswordToken(user *User) error
+	SetNewForgottenPassword(user *User) error
+	ResetApiKey(user *User) error
 }
 
 type userService struct {
@@ -90,16 +94,11 @@ func (this *userService) FindById(id string) (*User, error) {
 func (this *userService) Insert(item *User) error {
 	found, _ := this.FindAll(UserSearchDto{Email: item.Email})
 	if len(found) == 0 {
-		apikey, err := cookie.Generate(128)
-		if err != nil {
-			return err
-		}
-		item.APIKey = apikey
+		item.APIKey = this.generateUniqueApiKey()
 		return this.repo.Insert(item)
 	} else {
 		return errors.New("X001 - Could not create user")
 	}
-
 }
 
 func (this *userService) Update(item *User) error {
@@ -116,6 +115,53 @@ func (this *userService) PasswordHash(source string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
+func (this *userService) SetForgotPasswordToken(user *User) error {
+	user.ForgotPasswordToken = utils.SecureRandomString(36)
+	err := this.repo.SetForgotPasswordToken(user)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func (this *userService) SetNewForgottenPassword(user *User) error {
+	item, err := this.repo.FindByForgotPasswordToken(&UserSearchDto{Email: user.Email, ForgotPasswordToken: user.ForgotPasswordToken})
+	if err != nil {
+		return err
+	}
+
+	item.PasswordHash = user.PasswordHash
+	err = this.repo.Update(item)
+	if err != nil {
+		return err
+	}
+
+	err = this.repo.RemoveForgotPasswordToken(item)
+	return err
+}
+
+func (this *userService) ResetApiKey(user *User) error {
+	if user.Id == 0 {
+		return UserNotFound
+	}
+
+	user.APIKey = this.generateUniqueApiKey()
+	return this.repo.Update(user)
+}
+
 func NewUserService(repo UserRepository) UserService {
 	return &userService{repo: repo}
+}
+
+func (this *userService) generateUniqueApiKey() (apikey string) {
+	for {
+		apikey = utils.SecureRandomString(36)
+		if _, err := this.FindByKey(apikey); err != nil {
+			if err != UserNotFound {
+				fmt.Println("UserService -> generateUniqueApiKey", err)
+			}
+			break
+		}
+	}
+	return
 }

@@ -84,6 +84,33 @@ func (this *UserRepository) Delete(item *usr.User) error {
 	return err
 }
 
+func (this *UserRepository) FindByForgotPasswordToken(dto *usr.UserSearchDto) (*usr.User, error) {
+	query := sq.Select("Id", "Email", "PasswordHash", "APIKey", "AccountId").From("user")
+	query = query.
+		Where(sq.Eq{"Email": dto.Email}).
+		Where(sq.Eq{"ForgotPasswordToken": dto.ForgotPasswordToken}).
+		Where("ForgotPasswordToken IS NOT NULL").
+		Where("ForgotPasswordTokenExpiredAt IS NOT NULL AND ForgotPasswordTokenExpiredAt > NOW()").
+		Limit(1).Offset(0)
+
+	user := &usr.User{}
+	err := query.RunWith(this.db).QueryRow().Scan(&user.Id, &user.Email, &user.PasswordHash, &user.APIKey, &user.AccountId)
+	if err != nil {
+		return nil, err
+	}
+	return user, err
+}
+
+func (this *UserRepository) SetForgotPasswordToken(item *usr.User) error {
+	_, err := this.db.Exec("update user set ForgotPasswordToken=?, ForgotPasswordTokenExpiredAt=DATE_ADD(NOW(), INTERVAL 1 DAY) where Id=?", item.ForgotPasswordToken, item.Id)
+	return err
+}
+
+func (this *UserRepository) RemoveForgotPasswordToken(item *usr.User) error {
+	_, err := this.db.Exec("update user set ForgotPasswordToken=NULL , ForgotPasswordTokenExpiredAt=NULL where Id=?", item.Id)
+	return err
+}
+
 func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
