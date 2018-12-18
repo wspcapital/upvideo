@@ -16,27 +16,27 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 		}
 	})
 
-	r.POST("/api/login", this.todoLogin)
-	r.POST("/api/forgot-password", this.userForgotPassword)
-	r.POST("/api/restore-password", this.userRestorePassword)
+	r.POST("/auth/signin", this.signin)
+	r.POST("/auth/signup", this.signup)
+	r.POST("/auth/forgot-password", this.userForgotPassword)
+	r.POST("/auth/restore-password", this.userRestorePassword)
 
-	r.POST("/api/change-password", this.requireAuth, this.userChangePassword)
-	r.POST("/api/reset-apikey", this.requireAuth, this.userResetApikey)
+	r.POST("/auth/change-password", this.requireAuth, this.userChangePassword)
+	r.POST("/auth/reset-apikey", this.requireAuth, this.userResetApikey)
 
 	profile := r.Group("/api/profile")
 	profile.Use(this.requireAuth)
 	{
 		profile.GET("/", this.profile)
 	}
-	r.POST("/api/register", this.register)
 
 	// video group api
 	videos := r.Group("/api/videos")
 	videos.Use(this.requireAuth)
 	{
-		videos.GET("/", this.videoIndex)
+		videos.GET("", this.videoIndex)
 		videos.GET("/:id", this.videoView)
-		videos.POST("/", this.videoCreate)
+		videos.POST("", this.videoCreate)
 		videos.PUT("/:id", this.videoUpdate)
 		videos.DELETE("/:id", this.videoDelete)
 		videos.POST("/:id/gen_titles", this.VideoGenerateTitles)
@@ -47,10 +47,10 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 	accounts := r.Group("/api/accounts")
 	accounts.Use(this.requireAuth)
 	{
-		accounts.GET("/", this.accountIndex)
+		accounts.GET("", this.accountIndex)
 		accounts.GET("/:id", this.accountView)
 		accounts.GET("/:id/select", this.accountSelect)
-		accounts.POST("/", this.accountCreate)
+		accounts.POST("", this.accountCreate)
 		accounts.POST("/confirm", this.accountConfirm)
 		accounts.PUT("/:id", this.accountUpdate)
 		accounts.DELETE("/:id", this.accountDelete)
@@ -60,9 +60,9 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 	_titles := r.Group("/api/titles")
 	_titles.Use(this.requireAuth)
 	{
-		_titles.GET("/", this.titleIndex)
+		_titles.GET("", this.titleIndex)
 		_titles.GET("/:id", this.titleView)
-		_titles.POST("/", this.titleCreate)
+		_titles.POST("", this.titleCreate)
 		_titles.PUT("/:id", this.titleUpdate)
 		_titles.DELETE("/:id", this.titleDelete)
 

@@ -118,7 +118,7 @@
 							]
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/register?",
+							"raw": "127.0.0.1:3000/api/register",
 							"host": [
 								"127",
 								"0",
@@ -551,7 +551,7 @@
 			"name": "videos",
 			"item": [
 				{
-					"name": "127.0.0.1:3000/api/videos/",
+					"name": "127.0.0.1:3000/api/videos",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -587,7 +587,7 @@
 					"response": []
 				},
 				{
-					"name": "127.0.0.1:3000/api/videos/",
+					"name": "127.0.0.1:3000/api/videos",
 					"event": [
 						{
 							"listen": "test",
@@ -665,7 +665,7 @@
 							]
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/videos/",
+							"raw": "127.0.0.1:3000/api/videos",
 							"host": [
 								"127",
 								"0",
@@ -675,8 +675,7 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"videos",
-								""
+								"videos"
 							]
 						}
 					},
@@ -801,7 +800,7 @@
 			"name": "accounts",
 			"item": [
 				{
-					"name": "127.0.0.1:3000/api/accounts/",
+					"name": "127.0.0.1:3000/api/accounts",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -820,7 +819,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "127.0.0.1:3000/api/accounts/?limit=4",
+							"raw": "127.0.0.1:3000/api/accounts?limit=4",
 							"host": [
 								"127",
 								"0",
@@ -830,8 +829,7 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"accounts",
-								""
+								"accounts"
 							],
 							"query": [
 								{
@@ -844,7 +842,7 @@
 					"response": []
 				},
 				{
-					"name": "127.0.0.1:3000/api/accounts/",
+					"name": "127.0.0.1:3000/api/accounts",
 					"event": [
 						{
 							"listen": "test",
@@ -908,7 +906,7 @@
 							]
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/accounts/",
+							"raw": "127.0.0.1:3000/api/accounts",
 							"host": [
 								"127",
 								"0",
@@ -918,8 +916,7 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"accounts",
-								""
+								"accounts"
 							]
 						}
 					},
@@ -1046,7 +1043,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/accounts/",
+							"raw": "127.0.0.1:3000/api/accounts",
 							"host": [
 								"127",
 								"0",
@@ -1056,8 +1053,7 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"accounts",
-								""
+								"accounts"
 							]
 						}
 					},
@@ -1116,7 +1112,7 @@
 			"name": "titles",
 			"item": [
 				{
-					"name": "127.0.0.1:3000/api/titles/",
+					"name": "127.0.0.1:3000/api/titles",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1135,7 +1131,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/titles/",
+							"raw": "127.0.0.1:3000/api/titles",
 							"host": [
 								"127",
 								"0",
@@ -1145,15 +1141,14 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"titles",
-								""
+								"titles"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "127.0.0.1:3000/api/titles/",
+					"name": "127.0.0.1:3000/api/titles",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1172,7 +1167,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/titles/",
+							"raw": "127.0.0.1:3000/api/titles",
 							"host": [
 								"127",
 								"0",
@@ -1182,8 +1177,7 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"titles",
-								""
+								"titles"
 							]
 						}
 					},

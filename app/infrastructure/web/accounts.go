@@ -24,8 +24,8 @@ var (
 )
 
 type AccountResponse struct {
-	Items []*accounts.Account
-	Total int
+	Items []*accounts.Account `json:"items"`
+	Total int                 `json:"total"`
 }
 
 func (this *WebServer) accountIndex(c *gin.Context) {
@@ -57,8 +57,8 @@ func (this *WebServer) accountCreate(c *gin.Context) {
 		ChannelName string `validate:"required,title"`
 		ChannelUrl  string `validate:"required,url"`
 		// ClientSecrets string // file
-		OTPCode string `validate:"required,alphanumunicode"`
-		Note    string `validate:"required,text"`
+		OTPCode string // `validate:"alphanumunicode"`
+		Note    string `validate:"text"`
 	}
 
 	req := &AccountCreateRequest{
@@ -157,7 +157,7 @@ func (this *WebServer) accountCreate(c *gin.Context) {
 	// response
 	type AccountCreateResponse struct {
 		OperationId string `json:"operation_id"`
-		AuthUrl     string `json:"AuthUrl"`
+		AuthUrl     string `json:"auth_url"`
 	}
 
 	res := &AccountCreateResponse{
@@ -318,7 +318,35 @@ func (this *WebServer) accountDelete(c *gin.Context) {
 		return
 	}
 
-	this.AccountService.Delete(_account)
+	err = this.AccountService.Delete(_account)
+	if err != nil {
+		fmt.Println("\n this.AccountService.Delete Error: ", err.Error())
+		c.Status(http.StatusInternalServerError)
+	}
+
+	// set first account as selected
+	user := this.getUser(c)
+	_account, err = this.AccountService.FindOne(accounts.Params{
+		UserId: user.Id,
+	})
+	if err != nil && err != sql.ErrNoRows {
+		fmt.Println("\n this.AccountService.FindOne Error: ", err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	if err == sql.ErrNoRows {
+		user.AccountId = _account.Id
+	} else {
+		user.AccountId = _account.Id
+	}
+	err = this.UserService.Update(user)
+	if err != nil {
+		fmt.Println("\n this.UserService.Update Error: ", err.Error())
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
 	c.Status(200)
 }
 

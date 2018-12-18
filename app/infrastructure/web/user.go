@@ -11,11 +11,11 @@ import (
 )
 
 type ProfileResponse struct {
-	Email  string
-	APIKey string
+	Email  string `json:"email"`
+	APIKey string `json:"api_key"`
 }
 
-func (this *WebServer) todoLogin(c *gin.Context) {
+func (this *WebServer) signin(c *gin.Context) {
 	user, err := this.UserService.Login(c.PostForm("login"), c.PostForm("password"))
 	if err != nil {
 		c.AbortWithError(400, err)
@@ -27,11 +27,11 @@ func (this *WebServer) todoLogin(c *gin.Context) {
 	if err != nil {
 		c.JSON(500, gin.H{"error": "User not found"})
 	} else {
-		c.JSON(200, gin.H{"token": sess.Id})
+		c.JSON(200, gin.H{"token": sess.Id, "access": gin.H{"username": user.Email}})
 	}
 }
 
-func (this *WebServer) register(c *gin.Context) {
+func (this *WebServer) signup(c *gin.Context) {
 
 	// if this.Params.Registration == false {
 	// 	c.AbortWithError(403, errors.New("Registration Unavailable"))

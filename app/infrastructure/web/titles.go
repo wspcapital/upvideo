@@ -10,8 +10,8 @@ import (
 )
 
 type TitleResponse struct {
-	Items []*titles.Title
-	Total int
+	Items []*titles.Title `json:"items"`
+	Total int             `json:"total"`
 }
 
 func (this *WebServer) titleIndex(c *gin.Context) {

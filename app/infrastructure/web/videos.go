@@ -16,8 +16,8 @@ import (
 )
 
 type VideoResponse struct {
-	Items []*videos.Video
-	Total int
+	Items []*videos.Video `json:"items"`
+	Total int             `json:"total"`
 }
 
 func (this *WebServer) videoIndex(c *gin.Context) {
@@ -44,9 +44,9 @@ func (this *WebServer) videoIndex(c *gin.Context) {
 func (this *WebServer) videoCreate(c *gin.Context) {
 	// request
 	type VideoCreateRequest struct {
-		Title       string `validate:"title"`
+		Title       string `validate:"required,title"`
 		Description string `validate:"text"`
-		Tags        string `validate:"text"`
+		Tags        string `validate:"required,text"`
 		Category    string
 		Language    string
 		Playlist    string

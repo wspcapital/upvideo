@@ -6,20 +6,20 @@ import (
 )
 
 type Title struct {
-	Id         int
-	UserId     int
-	VideoId    int
-	Title      string
-	Tags       string
-	File       string
-	TmpFile    string
-	YoutubeId  string
-	Posted     bool
-	Converted  bool
-	Pending    bool
-	FrameRate  int
-	Resolution int
-	IpAddress  string
+	Id         int    `json:"id"`
+	UserId     int    `json:"user_id"`
+	VideoId    int    `json:"video_id"`
+	Title      string `json:"title"`
+	Tags       string `json:"tags"`
+	File       string `json:"file"`
+	TmpFile    string `json:"tmp_file"`
+	YoutubeId  string `json:"youtube_id"`
+	Posted     bool   `json:"posted"`
+	Converted  bool   `json:"converted"`
+	Pending    bool   `json:"pending"`
+	FrameRate  int    `json:"frame_rate"`
+	Resolution int    `json:"resolution"`
+	IpAddress  string `json:"ip_address"`
 }
 
 func (this *Title) GetPreparedFilename() string {

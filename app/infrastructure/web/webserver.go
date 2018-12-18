@@ -40,8 +40,8 @@ func (this *WebServer) Start() {
 
 	// cross Origin helper
 	r.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "content-type, Authorization")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Cache-Control, Authorization")
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		if c.Request.Method == "OPTIONS" {
 			c.Status(200)
