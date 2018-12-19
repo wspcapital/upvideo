@@ -63,6 +63,7 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 		_titles.GET("", this.titleIndex)
 		_titles.GET("/:id", this.titleView)
 		_titles.POST("", this.titleCreate)
+		_titles.GET("/:id/suggest", this.titleSuggest)
 		_titles.PUT("/:id", this.titleUpdate)
 		_titles.DELETE("/:id", this.titleDelete)
 

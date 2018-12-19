@@ -2,7 +2,9 @@ package validator
 
 import (
 	"gopkg.in/go-playground/validator.v9"
+	"reflect"
 	"regexp"
+	"strings"
 )
 
 var (
@@ -15,6 +17,15 @@ var (
 
 func init() {
 	validate = validator.New()
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+
+		if name == "-" {
+			return ""
+		}
+
+		return name
+	})
 	_ = validate.RegisterValidation("title", validateTitle)
 	_ = validate.RegisterValidation("text", validateText)
 	_ = validate.RegisterValidation("confirm_code", validateConfirmCode)
@@ -34,4 +45,14 @@ func validateText(fl validator.FieldLevel) bool {
 
 func validateConfirmCode(fl validator.FieldLevel) bool {
 	return confirmCodeRegexp.MatchString(fl.Field().String())
+}
+
+func JsonErrors(errs interface{}) (json map[string]interface{}) {
+	json = make(map[string]interface{})
+	if len(errs.(validator.ValidationErrors)) > 0 {
+		for _, err := range errs.(validator.ValidationErrors) {
+			json[err.Field()] = err.Value()
+		}
+	}
+	return
 }

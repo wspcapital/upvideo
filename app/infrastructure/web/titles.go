@@ -2,6 +2,7 @@ package web
 
 import (
 	"bitbucket.org/marketingx/upvideo/app/videos/titles"
+	"bitbucket.org/marketingx/upvideo/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -129,6 +130,30 @@ func (this *WebServer) titleDelete(c *gin.Context) {
 	}
 	this.TitleService.Delete(_title)
 	c.Status(200)
+}
+
+func (this *WebServer) titleSuggest(c *gin.Context) {
+	type request struct {
+		Title string `json:"title" validate:"required,title"`
+	}
+
+	req := &request{
+		Title: c.Query("title"),
+	}
+
+	err := validator.GetValidatorInstance().Struct(req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": validator.JsonErrors(err)})
+		return
+	}
+
+	keywords, err := this.KeywordtoolService.GetKeywords(req.Title)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Can not get keywords, try again later.")
+		return
+	}
+
+	c.JSON(http.StatusOK, keywords)
 }
 
 func (this *WebServer) titleConvert(c *gin.Context) {
