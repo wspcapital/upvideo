@@ -3,7 +3,7 @@ package titles
 type Params struct {
 	Id         int
 	UserId     int
-	VideoId    int
+	CampaignId int
 	Title      string
 	Tags       string
 	File       string

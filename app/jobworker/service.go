@@ -2,9 +2,10 @@ package jobworker
 
 import (
 	"bitbucket.org/marketingx/upvideo/app/accounts"
+	"bitbucket.org/marketingx/upvideo/app/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/jobs"
+	"bitbucket.org/marketingx/upvideo/app/titles"
 	"bitbucket.org/marketingx/upvideo/app/videos"
-	"bitbucket.org/marketingx/upvideo/app/videos/titles"
 	"bitbucket.org/marketingx/upvideo/config"
 	"bitbucket.org/marketingx/upvideo/utils"
 	"bytes"
@@ -28,11 +29,13 @@ var (
 )
 
 type Service struct {
-	Config         *config.Config
-	VideoService   *videos.Service
-	TitleService   *titles.Service
-	JobService     *jobs.Service
-	AccountService *accounts.Service
+	Config          *config.Config
+	VideoService    *videos.Service
+	CampaignService *campaigns.Service
+	TitleService    *titles.Service
+	JobService      *jobs.Service
+	AccountService  *accounts.Service
+	// todo: store count of completed titles to campaign. What titles are completed?
 }
 
 func (this *Service) Start() {
@@ -105,10 +108,18 @@ func (this *Service) processConvertTitleJob(job *jobs.Job) (_title *titles.Title
 		return _title, errors.New(fmt.Sprintf("Sql err: %v", err))
 	}
 
-	_video, err := this.VideoService.FindOne(videos.Params{Id: _title.VideoId})
+	_campaign, err := this.CampaignService.FindOne(campaigns.Params{Id: _title.CampaignId})
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return _title, errors.New(fmt.Sprintf("Related video id:'%d' not found", _title.VideoId))
+			return _title, errors.New(fmt.Sprintf("Related campaign id:'%d' not found", _title.CampaignId))
+		}
+		return _title, errors.New(fmt.Sprintf("Sql err: %v", err))
+	}
+
+	_video, err := this.VideoService.FindOne(videos.Params{Id: _campaign.VideoId})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return _title, errors.New(fmt.Sprintf("Related video id:'%d' not found", _campaign.VideoId))
 		}
 		return _title, errors.New(fmt.Sprintf("Sql err: %v", err))
 	}
@@ -224,18 +235,26 @@ func (this *Service) processUploadTitleJob(job *jobs.Job) (_title *titles.Title,
 		return _title, errors.New(fmt.Sprintf("Sql err: %v", err))
 	}
 
-	_video, err := this.VideoService.FindOne(videos.Params{Id: _title.VideoId})
+	_campaign, err := this.CampaignService.FindOne(campaigns.Params{Id: _title.CampaignId})
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return _title, errors.New(fmt.Sprintf("Related video id:'%d' not found", _title.VideoId))
+			return _title, errors.New(fmt.Sprintf("Related campaign id:'%d' not found", _title.CampaignId))
 		}
 		return _title, errors.New(fmt.Sprintf("Sql err: %v", err))
 	}
 
-	_account, err := this.AccountService.FindOne(accounts.Params{Id: _video.AccountId})
+	_account, err := this.AccountService.FindOne(accounts.Params{Id: _campaign.AccountId})
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return _title, errors.New(fmt.Sprintf("Related account id:'%d' not found", _video.AccountId))
+			return _title, errors.New(fmt.Sprintf("Related account id:'%d' not found", _campaign.AccountId))
+		}
+		return _title, errors.New(fmt.Sprintf("Sql err: %v", err))
+	}
+
+	_video, err := this.VideoService.FindOne(videos.Params{Id: _campaign.VideoId})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return _title, errors.New(fmt.Sprintf("Related video id:'%d' not found", _campaign.VideoId))
 		}
 		return _title, errors.New(fmt.Sprintf("Sql err: %v", err))
 	}

@@ -8,7 +8,7 @@ import (
 type Title struct {
 	Id         int    `json:"id"`
 	UserId     int    `json:"user_id"`
-	VideoId    int    `json:"video_id"`
+	CampaignId int    `json:"campaign_id"`
 	Title      string `json:"title"`
 	Tags       string `json:"tags"`
 	File       string `json:"file"`

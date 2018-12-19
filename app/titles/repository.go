@@ -5,7 +5,6 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"log"
-	"time"
 )
 
 type Repository struct {
@@ -13,14 +12,14 @@ type Repository struct {
 }
 
 func (this *Repository) FindAll(params Params) (items []*Title, err error) {
-	query := sq.Select("Id", "UserId", "VideoId", "Title", "Tags", "File", "TmpFile", "YoutubeId", "Posted", "Converted", "Pending", "FrameRate", "Resolution", "IpAddress").From("titles")
+	query := sq.Select("Id", "UserId", "CampaignId", "Title", "Tags", "File", "TmpFile", "YoutubeId", "Posted", "Converted", "Pending", "FrameRate", "Resolution", "IpAddress").From("titles")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
 	}
 
-	if params.VideoId != 0 {
-		query = query.Where("VideoId = ?", params.VideoId)
+	if params.CampaignId != 0 {
+		query = query.Where("CampaignId = ?", params.CampaignId)
 	}
 
 	if params.Title != "" {
@@ -50,7 +49,7 @@ func (this *Repository) FindAll(params Params) (items []*Title, err error) {
 		rows.Scan(
 			&title.Id,
 			&title.UserId,
-			&title.VideoId,
+			&title.CampaignId,
 			&title.Title,
 			&title.Tags,
 			&title.File,
@@ -71,9 +70,9 @@ func (this *Repository) FindAll(params Params) (items []*Title, err error) {
 }
 
 func (this *Repository) Insert(item *Title) error {
-	result, err := this.db.Exec("INSERT INTO titles(UserId, VideoId, Title, Tags, File, TmpFile, YoutubeId, Posted, Converted, Pending, FrameRate, Resolution, IpAddress, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	result, err := this.db.Exec("INSERT INTO titles(UserId, CampaignId, Title, Tags, File, TmpFile, YoutubeId, Posted, Converted, Pending, FrameRate, Resolution, IpAddress) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		item.UserId,
-		item.VideoId,
+		item.CampaignId,
 		item.Title,
 		item.Tags,
 		item.File,
@@ -85,8 +84,6 @@ func (this *Repository) Insert(item *Title) error {
 		item.FrameRate,
 		item.Resolution,
 		item.IpAddress,
-		int32(time.Now().Unix()),
-		int32(time.Now().Unix()),
 	)
 
 	if err != nil {
@@ -100,9 +97,9 @@ func (this *Repository) Insert(item *Title) error {
 }
 
 func (this *Repository) Update(item *Title) error {
-	_, err := this.db.Exec("UPDATE titles SET UserId=?, VideoId=?, Title=?, Tags=?, File=?, TmpFile=?, YoutubeId=?, Posted=?, Converted=?, Pending=?, FrameRate=?, Resolution=?, IpAddress=? WHERE Id=?",
+	_, err := this.db.Exec("UPDATE titles SET UserId=?, CampaignId=?, Title=?, Tags=?, File=?, TmpFile=?, YoutubeId=?, Posted=?, Converted=?, Pending=?, FrameRate=?, Resolution=?, Updated_at=NOW() WHERE Id=?",
 		item.UserId,
-		item.VideoId,
+		item.CampaignId,
 		item.Title,
 		item.Tags,
 		item.File,
@@ -113,7 +110,6 @@ func (this *Repository) Update(item *Title) error {
 		item.Pending,
 		item.FrameRate,
 		item.Resolution,
-		item.IpAddress,
 		item.Id,
 	)
 	return err

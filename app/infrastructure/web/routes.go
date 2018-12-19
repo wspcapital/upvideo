@@ -39,8 +39,6 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 		videos.POST("", this.videoCreate)
 		videos.PUT("/:id", this.videoUpdate)
 		videos.DELETE("/:id", this.videoDelete)
-		videos.POST("/:id/gen_titles", this.VideoGenerateTitles)
-		videos.GET("/:id/get_titles", this.VideoGetTitles)
 	}
 
 	// accounts group api
@@ -54,6 +52,19 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 		accounts.POST("/confirm", this.accountConfirm)
 		accounts.PUT("/:id", this.accountUpdate)
 		accounts.DELETE("/:id", this.accountDelete)
+	}
+
+	// campaigns group api
+	campaigns := r.Group("/api/campaigns")
+	campaigns.Use(this.requireAuth)
+	{
+		campaigns.GET("", this.campaignIndex)
+		campaigns.GET("/:id", this.campaignView)
+		campaigns.POST("", this.campaignCreate)
+		campaigns.PUT("/:id", this.campaignUpdate)
+		campaigns.DELETE("/:id", this.campaignDelete)
+		videos.POST("/:id/gen_titles", this.campaignGenerateTitles)
+		videos.GET("/:id/get_titles", this.campaignGetTitles)
 	}
 
 	// titles group api

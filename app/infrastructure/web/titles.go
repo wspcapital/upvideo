@@ -1,7 +1,7 @@
 package web
 
 import (
-	"bitbucket.org/marketingx/upvideo/app/videos/titles"
+	"bitbucket.org/marketingx/upvideo/app/titles"
 	"bitbucket.org/marketingx/upvideo/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"

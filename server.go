@@ -2,6 +2,7 @@ package main
 
 import (
 	"bitbucket.org/marketingx/upvideo/app/accounts"
+	"bitbucket.org/marketingx/upvideo/app/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"bitbucket.org/marketingx/upvideo/app/email"
@@ -11,8 +12,8 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/jobworker"
 	"bitbucket.org/marketingx/upvideo/app/services/keywordtool"
 	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
+	"bitbucket.org/marketingx/upvideo/app/titles"
 	"bitbucket.org/marketingx/upvideo/app/videos"
-	"bitbucket.org/marketingx/upvideo/app/videos/titles"
 	"bitbucket.org/marketingx/upvideo/aws"
 	"bitbucket.org/marketingx/upvideo/config"
 	"database/sql"
@@ -57,12 +58,14 @@ func main() {
 	videoService := videos.NewService(videos.NewRepository(db))
 	jobsService := jobs.NewService(jobs.NewRepository(db))
 	accountService := accounts.NewService(accounts.NewRepository(db))
+	campaignService := campaigns.NewService(campaigns.NewRepository(db))
 
 	webServer := &web.WebServer{
 		UserService:        usr.NewUserService(infrastructure.NewUserRepository(db)),
 		SessionService:     session.NewService(sessionRepository),
 		VideoService:       videoService,
 		AccountService:     accountService,
+		CampaignService:    campaignService,
 		TitleService:       titlesService,
 		JobService:         jobsService,
 		KeywordtoolService: keywordtool.NewService(&cfg.Keywordtool),
@@ -86,7 +89,7 @@ func main() {
 
 func initDbTables(db *sql.DB) {
 	var count int
-	db.QueryRow("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE();").Scan(&count)
+	_ = db.QueryRow("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE();").Scan(&count)
 	if count == 0 {
 		file, err := ioutil.ReadFile("./db.sql")
 		if err != nil {

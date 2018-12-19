@@ -2,14 +2,15 @@ package web
 
 import (
 	"bitbucket.org/marketingx/upvideo/app/accounts"
+	"bitbucket.org/marketingx/upvideo/app/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"bitbucket.org/marketingx/upvideo/app/email"
 	"bitbucket.org/marketingx/upvideo/app/jobs"
 	"bitbucket.org/marketingx/upvideo/app/services/keywordtool"
 	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
+	"bitbucket.org/marketingx/upvideo/app/titles"
 	"bitbucket.org/marketingx/upvideo/app/videos"
-	"bitbucket.org/marketingx/upvideo/app/videos/titles"
 	"bitbucket.org/marketingx/upvideo/config"
 	"fmt"
 	"github.com/gin-gonic/autotls"
@@ -26,6 +27,7 @@ type WebServer struct {
 	SessionService     session.Service
 	VideoService       *videos.Service
 	AccountService     *accounts.Service
+	CampaignService    *campaigns.Service
 	TitleService       *titles.Service
 	JobService         *jobs.Service
 	KeywordtoolService *keywordtool.Service
