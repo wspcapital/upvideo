@@ -13,7 +13,7 @@ type Repository struct {
 }
 
 func (this *Repository) FindAll(params Params) (items []*Title, err error) {
-	query := sq.Select("Id", "UserId", "CampaignId", "Title", "Tags", "File", "TmpFile", "YoutubeId", "YoutubeUrl", "Posted", "Converted", "Pending", "FrameRate", "Resolution", "IpAddress", "Created_at", "Updated_at").From("titles")
+	query := sq.Select("Id", "UserId", "CampaignId", "Title", "Tags", "File", "TmpFile", "YoutubeId", "YoutubeUrl", "Posted", "Converted", "Pending", "FrameRate", "Resolution", "IpAddress", "Created_at", "Updated_at", "Published_at").From("titles")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
@@ -65,6 +65,7 @@ func (this *Repository) FindAll(params Params) (items []*Title, err error) {
 			&title.IpAddress,
 			&title.CreatedAt,
 			&title.UpdatedAt,
+			&title.PublishedAt,
 		)
 
 		items = append(items, title)
@@ -160,7 +161,7 @@ func (this *Repository) Has(item *Title) (bool, error) {
 }
 
 func (this *Repository) Update(item *Title) error {
-	_, err := this.db.Exec("UPDATE titles SET UserId=?, CampaignId=?, Title=?, Tags=?, File=?, TmpFile=?, YoutubeId=?, YoutubeUrl=?, Posted=?, Converted=?, Pending=?, FrameRate=?, Resolution=?, Updated_at=NOW() WHERE Id=?",
+	_, err := this.db.Exec("UPDATE titles SET UserId=?, CampaignId=?, Title=?, Tags=?, File=?, TmpFile=?, YoutubeId=?, YoutubeUrl=?, Posted=?, Converted=?, Pending=?, FrameRate=?, Resolution=?, Published_at=?, Updated_at=NOW() WHERE Id=?",
 		item.UserId,
 		item.CampaignId,
 		item.Title,
@@ -174,6 +175,7 @@ func (this *Repository) Update(item *Title) error {
 		item.Pending,
 		item.FrameRate,
 		item.Resolution,
+		item.PublishedAt,
 		item.Id,
 	)
 	return err
