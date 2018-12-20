@@ -6,6 +6,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
 	_ "log"
 	"net/http"
 	"path/filepath"
@@ -79,6 +80,21 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 		return
 	}
 
+	videoUuid, err := uuid.NewV4()
+	if err != nil {
+		fmt.Println("\n UUID generation Error: ", err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	targetPath := fmt.Sprintf("/%d/%s/%s", user.Id, videoUuid.String(), fileName)
+	location, err := aws.UploadS3File(targetPath, fileReader)
+	if err != nil {
+		fmt.Println("\n aws.UploadS3File Error: ", err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
 	video := &videos.Video{}
 	video.UserId = user.Id
 	video.AccountId = user.AccountId
@@ -87,30 +103,17 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 	video.Tags = req.Tags
 	video.Category = req.Category
 	video.Language = req.Language
-	video.File = fileName
+	video.File = location
 	video.Playlist = req.Playlist
 	video.IpAddress = c.ClientIP()
 	err = this.VideoService.Insert(video)
 	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	targetPath := fmt.Sprintf("/%d/%d/%s", user.Id, video.Id, fileName)
-	location, err := aws.UploadS3File(targetPath, fileReader)
-	if err != nil {
+		fmt.Println("\n this.VideoService.Insert Error: ", err.Error())
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	video.File = location
-	err = this.VideoService.Update(video)
-	if err != nil {
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	c.JSON(200, video)
+	c.JSON(http.StatusOK, video)
 }
 
 func (this *WebServer) videoUpdate(c *gin.Context) {
