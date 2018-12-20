@@ -143,7 +143,7 @@ func (this *Repository) Insert(item *Title) error {
 
 func (this *Repository) Has(item *Title) (bool, error) {
 	var count int
-	err := this.db.QueryRow("SELECT COUNT(id) FROM titles WHERE CampaignId=? AND Title=?", item.CampaignId, item.Title).
+	err := this.db.QueryRow("SELECT COUNT(id) FROM titles WHERE CampaignId=? AND Title=? GROUP BY Resolution", item.CampaignId, item.Title).
 		Scan(&count)
 	if err != nil {
 		return true, err
