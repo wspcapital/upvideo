@@ -6,7 +6,6 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/kataras/iris/core/errors"
 	"log"
-	"time"
 )
 
 type Repository struct {
@@ -14,7 +13,7 @@ type Repository struct {
 }
 
 func (this *Repository) FindByOperation(UserId int, OperationId string) (*Account, error) {
-	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "ClientId", "Clientsecrets", "Requesttoken", "AuthUrl", "OnetimeCode", "Note", "OperationId").From("accounts")
+	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "ClientId", "Clientsecrets", "Requesttoken", "AuthUrl", "OnetimeCode", "Note", "OperationId", "Created_at", "Updated_at").From("accounts")
 
 	if UserId < 1 || OperationId == "" {
 		return nil, errors.New("Wrong sql request parameters")
@@ -39,6 +38,8 @@ func (this *Repository) FindByOperation(UserId int, OperationId string) (*Accoun
 		&_account.OTPCode,
 		&_account.Note,
 		&_account.OperationId,
+		&_account.Created_at,
+		&_account.Updated_at,
 	)
 	log.Println(_account)
 
@@ -50,7 +51,7 @@ func (this *Repository) FindByOperation(UserId int, OperationId string) (*Accoun
 }
 
 func (this *Repository) FindAll(params Params) (items []*Account, err error) {
-	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "ClientId", "Clientsecrets", "Requesttoken", "AuthUrl", "OnetimeCode", "Note", "OperationId").From("accounts")
+	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "ClientId", "Clientsecrets", "Requesttoken", "AuthUrl", "OnetimeCode", "Note", "OperationId", "Created_at", "Updated_at").From("accounts")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
@@ -102,6 +103,8 @@ func (this *Repository) FindAll(params Params) (items []*Account, err error) {
 			&_account.OTPCode,
 			&_account.Note,
 			&_account.OperationId,
+			&_account.Created_at,
+			&_account.Updated_at,
 		)
 		items = append(items, _account)
 	}
@@ -111,7 +114,19 @@ func (this *Repository) FindAll(params Params) (items []*Account, err error) {
 
 func (this *Repository) Insert(item *Account) error {
 	log.Println(item)
-	result, err := this.db.Exec("INSERT INTO accounts(UserId, Username, Password, Channelname, Channelurl, ClientId, Clientsecrets, Requesttoken, AuthUrl, OnetimeCode, Note, OperationId, Created_at, Updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	result, err := this.db.Exec(`INSERT accounts SET 
+                    UserId=?, 
+                    Username=?, 
+                    Password=?, 
+                    Channelname=?, 
+                    Channelurl=?, 
+                    ClientId=?, 
+                    Clientsecrets=?, 
+                    Requesttoken=?, 
+                    AuthUrl=?, 
+                    OnetimeCode=?, 
+                    Note=?, 
+                    OperationId=?`,
 		item.UserId,
 		item.Username,
 		item.Password,
@@ -124,8 +139,6 @@ func (this *Repository) Insert(item *Account) error {
 		item.OTPCode,
 		item.Note,
 		item.OperationId,
-		int32(time.Now().Unix()),
-		int32(time.Now().Unix()),
 	)
 	if err != nil {
 		fmt.Printf("SQL Insert err: \n%v\n", err)
@@ -141,7 +154,7 @@ func (this *Repository) Insert(item *Account) error {
 }
 
 func (this *Repository) Update(item *Account) error {
-	_, err := this.db.Exec("UPDATE accounts SET UserId=?, Username=?, Password=?, Channelname=?, Channelurl=?, ClientId=?, Clientsecrets=?, Requesttoken=?, AuthUrl=?, OnetimeCode=?, Note=?, OperationId=? WHERE Id=?",
+	_, err := this.db.Exec("UPDATE accounts SET UserId=?, Username=?, Password=?, Channelname=?, Channelurl=?, ClientId=?, Clientsecrets=?, Requesttoken=?, AuthUrl=?, OnetimeCode=?, Note=?, OperationId=?, Updated_at=NOW() WHERE Id=?",
 		item.UserId,
 		item.Username,
 		item.Password,

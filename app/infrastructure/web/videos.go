@@ -27,10 +27,15 @@ func (this *WebServer) videoIndex(c *gin.Context) {
 	if err != nil {
 		offset = 0
 	}
+	accountId, err := strconv.ParseInt(c.Query("account"), 10, 32)
+	if err != nil {
+		offset = 0
+	}
 	items, err := this.VideoService.FindAll(videos.Params{
-		UserId: this.getUser(c).Id,
-		Limit:  uint64(limit),
-		Offset: uint64(offset),
+		UserId:    this.getUser(c).Id,
+		AccountId: int(accountId),
+		Limit:     uint64(limit),
+		Offset:    uint64(offset),
 	})
 	if err != nil {
 		_ = c.AbortWithError(400, err)
