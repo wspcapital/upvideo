@@ -321,7 +321,7 @@ func (this *WebServer) campaignAddTitles(c *gin.Context) {
 	}
 
 	type request struct {
-		Titles string `validate:"required,text"`
+		Titles string `validate:"required"`
 	}
 
 	req := &request{Titles: c.PostForm("titles")}
