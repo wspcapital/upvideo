@@ -3,6 +3,7 @@ package web
 import (
 	"bitbucket.org/marketingx/upvideo/app/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/titles"
+	"bitbucket.org/marketingx/upvideo/app/videos"
 	"bitbucket.org/marketingx/upvideo/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -181,13 +182,20 @@ func (this *WebServer) campaignGenerateTitles(c *gin.Context) {
 		return
 	}
 
+	video, err := this.VideoService.FindOne(videos.Params{Id: campaign.VideoId})
+	if err != nil {
+		fmt.Println("\n this.VideoService.FindOne Error: ", err.Error())
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
 	// check that titles is already generated
 	if campaign.TitlesGenerated {
 		c.String(http.StatusBadRequest, "Titles already generated.")
 		return
 	}
 
-	keywords, err := this.KeywordtoolService.GetKeywords(campaign.Title)
+	keywords, err := this.KeywordtoolService.GetKeywords(video.Title)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Can not get keywords, try again later.")
 		return
