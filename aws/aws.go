@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	aws_session *session.Session
-	params      *config.AWSParams
+	awsSession *session.Session
+	awsParams  *config.AWSParams
 )
 
 type AWSEmail struct {
@@ -26,24 +26,23 @@ type AWSEmail struct {
 	ReplyTo string // Reply-To email(s)
 }
 
-func AWSInitSession(conf config.Config) (err error) {
-	params = &conf.AWS
-
+func AWSInitSession(params *config.AWSParams) (err error) {
+	awsParams = params
 	awsConf := &aws.Config{
-		Region:      aws.String(params.Region),
-		Credentials: credentials.NewStaticCredentials(params.AccessKeyId, params.SecretKey, ""),
+		Region:      aws.String(awsParams.Region),
+		Credentials: credentials.NewStaticCredentials(awsParams.AccessKeyId, awsParams.SecretKey, ""),
 	}
 
-	aws_session, err = session.NewSession(awsConf)
+	awsSession, err = session.NewSession(awsConf)
 
 	return
 }
 
 func UploadS3File(key string, reader io.Reader) (string, error) {
-	uploader := s3manager.NewUploader(aws_session)
+	uploader := s3manager.NewUploader(awsSession)
 	result, err := uploader.Upload(&s3manager.UploadInput{
 		Body:   reader,
-		Bucket: aws.String(params.Bucket),
+		Bucket: aws.String(awsParams.Bucket),
 		Key:    aws.String(key),
 		ACL:    aws.String("public-read"),
 	})
@@ -65,7 +64,7 @@ func UploadS3File(key string, reader io.Reader) (string, error) {
 
 func SendEmail(emailData AWSEmail) *ses.SendEmailOutput {
 	// start a new ses session
-	svc := ses.New(aws_session)
+	svc := ses.New(awsSession)
 
 	body := &ses.Body{}
 	if emailData.Text != "" || emailData.HTML == "" {

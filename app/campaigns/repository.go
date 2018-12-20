@@ -31,6 +31,7 @@ func (this *Repository) fetch(query sq.SelectBuilder) ([]*Campaign, error) {
 			&item.Title,
 			&item.TotalTitles,
 			&item.CompleteTitles,
+			&item.TitlesGenerating,
 			&item.TitlesGenerated,
 			&item.IpAddress,
 			&item.DateStart_at,
@@ -58,6 +59,7 @@ func (this *Repository) FindAll(params Params) (result []*Campaign, err error) {
 		"Title",
 		"TotalTitles",
 		"CompleteTitles",
+		"TitlesGenerating",
 		"TitlesGenerated",
 		"IpAddress",
 		"DateStart_at",
@@ -126,13 +128,14 @@ func (this *Repository) Insert(item *Campaign) error {
 }
 
 func (this *Repository) Update(item *Campaign) error {
-	_, err := this.db.Exec("UPDATE campaigns SET UserId=?, AccountId=?, VideoId=?, Title=?, TotalTitles=?, CompleteTitles=?, TitlesGenerated=?, DateStart_at=?, DateComplete_at=?, Updated_at=NOW() WHERE Id=?",
+	_, err := this.db.Exec("UPDATE campaigns SET UserId=?, AccountId=?, VideoId=?, Title=?, TotalTitles=?, CompleteTitles=?, TitlesGenerating=?, TitlesGenerated=?, DateStart_at=?, DateComplete_at=?, Updated_at=NOW() WHERE Id=?",
 		item.UserId,
 		item.AccountId,
 		item.VideoId,
 		item.Title,
 		item.TotalTitles,
 		item.CompleteTitles,
+		item.TitlesGenerating,
 		item.TitlesGenerated,
 		item.DateStart_at,
 		item.DateComplete_at,

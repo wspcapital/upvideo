@@ -61,7 +61,6 @@ func (this *Repository) FindAll(params Params) (items []*Job, err error) {
 }
 
 func (this *Repository) Insert(item *Job) error {
-	log.Println(item)
 	result, err := this.db.Exec("INSERT INTO jobs(UserId, RelatedId, `Type`, ProcessId, Progress) VALUES(?, ?, ?, ?, ?)",
 		item.UserId,
 		item.RelatedId,
@@ -149,7 +148,6 @@ func (this *Repository) FindAllFailedJobs(params Params) (items []*FailedJob, er
 }
 
 func (this *Repository) InsertFailedJob(item *FailedJob) error {
-	log.Println(item)
 	result, err := this.db.Exec("INSERT INTO failed_jobs(UserId, RelatedId, `Type`, ProcessId, `Error`) VALUES(?, ?, ?, ?, ?)",
 		item.UserId,
 		item.RelatedId,

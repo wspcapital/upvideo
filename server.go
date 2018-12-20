@@ -9,7 +9,6 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/infrastructure"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure/web"
 	"bitbucket.org/marketingx/upvideo/app/jobs"
-	"bitbucket.org/marketingx/upvideo/app/jobworker"
 	"bitbucket.org/marketingx/upvideo/app/services/keywordtool"
 	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
 	"bitbucket.org/marketingx/upvideo/app/titles"
@@ -41,7 +40,7 @@ func main() {
 	defer db.Close()
 	initDbTables(db)
 
-	err = aws.AWSInitSession(cfg)
+	err = aws.AWSInitSession(&cfg.AWS)
 
 	var sessionRepository session.Repository
 	if cfg.Session.Storage == "db" {
@@ -74,15 +73,6 @@ func main() {
 		Params:             cfg.WebServer,
 		Config:             cfg,
 	}
-
-	jobWorkerService := &jobworker.Service{
-		VideoService:   videoService,
-		TitleService:   titlesService,
-		JobService:     jobsService,
-		AccountService: accountService,
-		Config:         &cfg,
-	}
-	jobWorkerService.Start()
 
 	webServer.Start()
 }

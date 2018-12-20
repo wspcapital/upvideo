@@ -3,7 +3,6 @@ package web
 import (
 	"bitbucket.org/marketingx/upvideo/app/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/titles"
-	"bitbucket.org/marketingx/upvideo/app/videos"
 	"bitbucket.org/marketingx/upvideo/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -83,7 +82,22 @@ func (this *WebServer) campaignCreate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, campaign)
+	_, err = this.JobService.AddJob(this.getUser(c).Id, campaign.Id, "init-campaign")
+	if err != nil {
+		fmt.Println("\n Add campaign titles generation job err: ", err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	campaign.TitlesGenerating = true
+	err = this.CampaignService.Update(campaign)
+	if err != nil {
+		fmt.Println("\n this.CampaignService.Update Error: ", err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, campaign)
 }
 
 func (this *WebServer) campaignUpdate(c *gin.Context) {
@@ -182,84 +196,34 @@ func (this *WebServer) campaignGenerateTitles(c *gin.Context) {
 		return
 	}
 
-	video, err := this.VideoService.FindOne(videos.Params{Id: campaign.VideoId})
-	if err != nil {
-		fmt.Println("\n this.VideoService.FindOne Error: ", err.Error())
-		c.Status(http.StatusBadRequest)
+	// check that titles status
+	if campaign.TitlesGenerating {
+		c.String(http.StatusBadRequest, "Titles are already generating...")
 		return
 	}
 
-	// check that titles is already generated
 	if campaign.TitlesGenerated {
-		c.String(http.StatusBadRequest, "Titles already generated.")
+		c.String(http.StatusBadRequest, "Titles are already generated.")
 		return
 	}
 
-	keywords, err := this.KeywordtoolService.GetKeywords(video.Title)
+	// todo: implement job
+	_, err = this.JobService.AddJob(this.getUser(c).Id, campaign.Id, "generate-campaign-titles")
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Can not get keywords, try again later.")
+		fmt.Println("\n Add campaign titles generation job err: ", err.Error())
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	//var items []*titles.Title
-	titlesCreated := 0
-	for _, title := range keywords {
-		if title == "" {
-			continue
-		}
-
-		_title := &titles.Title{
-			UserId:     this.getUser(c).Id,
-			CampaignId: campaign.Id,
-			Title:      title,
-			IpAddress:  c.ClientIP(),
-		}
-
-		has, err := this.TitleService.Has(_title)
-		if err != nil {
-			fmt.Printf("Has title '%s' err: \n%v\n", title, err)
-			continue
-		}
-		if has {
-			fmt.Printf("Title already exists '%s', campaignId: %d \n", title, _title.CampaignId)
-			continue
-		}
-
-		tags, err := this.RapidtagsService.GetTags(title)
-		if err != nil {
-			fmt.Printf("Insert title '%s' err: \n%v\n", title, err)
-			continue
-		}
-
-		_title.Tags = strings.Join(tags, ",")
-
-		err = this.TitleService.Insert(_title)
-		if err != nil {
-			fmt.Printf("Insert title '%s' err: \n%v\n", title, err)
-			continue
-		}
-
-		//items = append(items, _title)
-		titlesCreated++
+	campaign.TitlesGenerating = true
+	err = this.CampaignService.Update(campaign)
+	if err != nil {
+		fmt.Println("\n this.CampaignService.Update Error: ", err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
 	}
 
-	if titlesCreated > 0 {
-		campaign.TitlesGenerated = true
-		err = this.CampaignService.CountTotalTitles(campaign)
-		if err != nil {
-			fmt.Println("\n this.CampaignService.CountTotalTitles Error: ", err.Error())
-			c.String(http.StatusInternalServerError, "Can not update campaign.")
-			return
-		}
-		err = this.CampaignService.Update(campaign)
-		if err != nil {
-			fmt.Println("\n this.CampaignService.Update Error: ", err.Error())
-			c.String(http.StatusInternalServerError, "Can not update campaign.")
-			return
-		}
-	}
-
-	c.JSON(http.StatusOK, gin.H{"count": titlesCreated})
+	c.Status(http.StatusOK)
 }
 
 func (this *WebServer) campaignGetTitles(c *gin.Context) {

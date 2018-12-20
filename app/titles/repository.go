@@ -83,7 +83,7 @@ func (this *Repository) Insert(item *Title) error {
 
 	err := this.db.QueryRow("SELECT MAX(FrameRate) AS maxFrameRate, Resolution AS maxResolution FROM titles WHERE Resolution in (SELECT MAX(Resolution) FROM titles WHERE CampaignId=?) GROUP BY Resolution LIMIT 1", item.CampaignId).
 		Scan(&mfr.FrameRate, &mfr.Resolution)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return err
 	}
 
@@ -104,7 +104,9 @@ func (this *Repository) Insert(item *Title) error {
                   Title=?, 
                   Tags=?, 
                   File=?, 
-                  TmpFile=?, 
+                  TmpFile=?,
+                  YoutubeId=?,
+                  YoutubeUrl=?,
                   FrameRate=?, 
                   Resolution=?, 
                   IpAddress=?`,
@@ -114,6 +116,8 @@ func (this *Repository) Insert(item *Title) error {
 			item.Tags,
 			item.File,
 			item.TmpFile,
+			item.YoutubeId,
+			item.YoutubeUrl,
 			item.FrameRate,
 			item.Resolution,
 			item.IpAddress,
@@ -143,9 +147,9 @@ func (this *Repository) Insert(item *Title) error {
 
 func (this *Repository) Has(item *Title) (bool, error) {
 	var count int
-	err := this.db.QueryRow("SELECT COUNT(id) FROM titles WHERE CampaignId=? AND Title=? GROUP BY Resolution", item.CampaignId, item.Title).
+	err := this.db.QueryRow("SELECT COUNT(id) FROM titles WHERE CampaignId=? AND Title=?", item.CampaignId, item.Title).
 		Scan(&count)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return true, err
 	}
 	if count > 0 {

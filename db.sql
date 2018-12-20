@@ -102,6 +102,7 @@ CREATE TABLE IF NOT EXISTS `campaigns` (
   `Title` varchar(250) NOT NULL,
   `TotalTitles` INT(11) NOT NULL DEFAULT 0,
   `CompleteTitles` INT(11) NOT NULL DEFAULT 0,
+  `TitlesGenerating` bool NOT NULL DEFAULT FALSE,
   `TitlesGenerated` bool NOT NULL DEFAULT FALSE,
   `IpAddress` varchar(32) NOT NULL,
   `DateStart_at` TIMESTAMP NULL,
