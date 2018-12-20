@@ -37,6 +37,10 @@ func (this *Service) Delete(item *Campaign) error {
 	return this.repo.Delete(item)
 }
 
+func (this *Service) CountTotalTitles(item *Campaign) error {
+	return this.repo.CountTotalTitles(item)
+}
+
 func NewService(repo *Repository) *Service {
 	return &Service{repo: repo}
 }

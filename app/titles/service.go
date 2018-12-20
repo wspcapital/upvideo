@@ -37,6 +37,10 @@ func (this *Service) Delete(item *Title) error {
 	return this.repo.Delete(item)
 }
 
+func (this *Service) Has(item *Title) (bool, error) {
+	return this.repo.Has(item)
+}
+
 func NewService(repo *Repository) *Service {
 	return &Service{repo: repo}
 }

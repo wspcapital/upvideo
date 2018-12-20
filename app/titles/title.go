@@ -5,6 +5,12 @@ import (
 	"strings"
 )
 
+var (
+	initialResolution = 1278
+	minFrameRate      = 20
+	maxFrameRate      = 29
+)
+
 type Title struct {
 	Id         int    `json:"id"`
 	UserId     int    `json:"user_id"`
@@ -28,4 +34,19 @@ func (this *Title) GetPreparedFilename() string {
 		return "empty-title.mp4"
 	}
 	return strings.Replace(this.Title, " ", "-", -1) + ".mp4"
+}
+
+func (this *Title) SetNextFrameRate() *Title {
+	if this.Resolution == 0 || this.FrameRate == 0 {
+		this.Resolution = initialResolution
+		this.FrameRate = minFrameRate
+	} else {
+		this.FrameRate++
+		if this.FrameRate > maxFrameRate {
+			this.FrameRate = minFrameRate
+			this.Resolution += 16
+		}
+	}
+
+	return this
 }

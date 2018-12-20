@@ -88,7 +88,9 @@ CREATE TABLE IF NOT EXISTS `titles` (
   `Created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
-  KEY `titles_UserId` (`UserId`)
+  KEY `titles_UserId` (`UserId`),
+  UNIQUE (`Title`),
+  UNIQUE (`CampaignId`, `FrameRate`, `Resolution`)
   ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `campaigns` (

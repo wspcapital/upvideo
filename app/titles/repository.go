@@ -2,8 +2,9 @@ package titles
 
 import (
 	"database/sql"
-	"fmt"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/go-sql-driver/mysql"
+	"github.com/guregu/null"
 	"log"
 )
 
@@ -70,30 +71,85 @@ func (this *Repository) FindAll(params Params) (items []*Title, err error) {
 }
 
 func (this *Repository) Insert(item *Title) error {
-	result, err := this.db.Exec("INSERT INTO titles(UserId, CampaignId, Title, Tags, File, TmpFile, YoutubeId, Posted, Converted, Pending, FrameRate, Resolution, IpAddress) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-		item.UserId,
-		item.CampaignId,
-		item.Title,
-		item.Tags,
-		item.File,
-		item.TmpFile,
-		item.YoutubeId,
-		item.Posted,
-		item.Converted,
-		item.Pending,
-		item.FrameRate,
-		item.Resolution,
-		item.IpAddress,
-	)
+	type maxFrameRate struct {
+		FrameRate  null.Int
+		Resolution null.Int
+	}
 
+	mfr := &maxFrameRate{}
+
+	err := this.db.QueryRow("SELECT MAX(FrameRate) AS maxFrameRate, Resolution AS maxResolution FROM titles WHERE Resolution in (SELECT MAX(Resolution) FROM titles WHERE CampaignId=?) LIMIT 1", item.CampaignId).
+		Scan(&mfr.FrameRate, &mfr.Resolution)
 	if err != nil {
-		fmt.Printf("SQL Insert err: \n%v\n", err)
 		return err
+	}
+
+	if mfr.Resolution.Valid && mfr.FrameRate.Valid {
+		item.Resolution = int(mfr.Resolution.Int64)
+		item.FrameRate = int(mfr.FrameRate.Int64)
+	}
+
+	var result sql.Result
+	insert := false
+
+	for !insert {
+		item.SetNextFrameRate()
+
+		result, err = this.db.Exec(`INSERT titles SET 
+                  UserId=?, 
+                  CampaignId=?, 
+                  Title=?, 
+                  Tags=?, 
+                  File=?, 
+                  TmpFile=?, 
+                  FrameRate=?, 
+                  Resolution=?, 
+                  IpAddress=?`,
+			item.UserId,
+			item.CampaignId,
+			item.Title,
+			item.Tags,
+			item.File,
+			item.TmpFile,
+			item.FrameRate,
+			item.Resolution,
+			item.IpAddress,
+		)
+
+		if driverErr, ok := err.(*mysql.MySQLError); ok {
+			if driverErr.Number != 1062 { // Duplicate error
+				return err
+			} else { // title can be duplicated too
+				has, err2 := this.Has(item)
+				if err2 != nil {
+					return err2
+				}
+				if has {
+					return err
+				}
+			}
+		} else {
+			insert = true
+		}
 	}
 
 	Id64, err := result.LastInsertId()
 	item.Id = int(Id64)
 	return err
+}
+
+func (this *Repository) Has(item *Title) (bool, error) {
+	var count int
+	err := this.db.QueryRow("SELECT COUNT(id) FROM titles WHERE CampaignId=? AND Title=?", item.CampaignId, item.Title).
+		Scan(&count)
+	if err != nil {
+		return true, err
+	}
+	if count > 0 {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 func (this *Repository) Update(item *Title) error {

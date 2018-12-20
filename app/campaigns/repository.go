@@ -146,6 +146,12 @@ func (this *Repository) Delete(item *Campaign) error {
 	return err
 }
 
+func (this *Repository) CountTotalTitles(item *Campaign) error {
+	err := this.db.QueryRow("SELECT COUNT(id) FROM titles WHERE CampaignId=?", item.Id).
+		Scan(&item.TotalTitles)
+	return err
+}
+
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{db: db}
 }

@@ -3,7 +3,6 @@ package web
 import (
 	"bitbucket.org/marketingx/upvideo/app/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/titles"
-	"bitbucket.org/marketingx/upvideo/utils"
 	"bitbucket.org/marketingx/upvideo/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -194,50 +193,56 @@ func (this *WebServer) campaignGenerateTitles(c *gin.Context) {
 		return
 	}
 
-	nextFrameRate := utils.NewNextFrameRateService()
-
 	//var items []*titles.Title
 	titlesCreated := 0
-	for _, keyword := range keywords {
-		if keyword == "" {
-			continue
-		}
-
-		tags, err := this.RapidtagsService.GetTags(keyword)
-		if err != nil {
-			fmt.Printf("Insert title '%s' err: \n%v\n", keyword, err)
+	for _, title := range keywords {
+		if title == "" {
 			continue
 		}
 
 		_title := &titles.Title{
 			UserId:     this.getUser(c).Id,
 			CampaignId: campaign.Id,
-			Title:      keyword,
-			Tags:       strings.Join(tags, ","),
-			File:       "",
-			Posted:     false,
-			Converted:  false,
-			Pending:    false,
-			FrameRate:  nextFrameRate.FrameRate,
-			Resolution: nextFrameRate.Resolution,
+			Title:      title,
 			IpAddress:  c.ClientIP(),
 		}
 
-		// todo: check exists
-		err = this.TitleService.Insert(_title)
+		has, err := this.TitleService.Has(_title)
 		if err != nil {
-			fmt.Printf("Insert title '%s' err: \n%v\n", keyword, err)
+			fmt.Printf("Has title '%s' err: \n%v\n", title, err)
+			continue
+		}
+		if has {
+			fmt.Printf("Title already exists '%s', campaignId: %d \n", title, _title.CampaignId)
 			continue
 		}
 
-		nextFrameRate.NextFrameRate()
+		tags, err := this.RapidtagsService.GetTags(title)
+		if err != nil {
+			fmt.Printf("Insert title '%s' err: \n%v\n", title, err)
+			continue
+		}
+
+		_title.Tags = strings.Join(tags, ",")
+
+		err = this.TitleService.Insert(_title)
+		if err != nil {
+			fmt.Printf("Insert title '%s' err: \n%v\n", title, err)
+			continue
+		}
+
 		//items = append(items, _title)
 		titlesCreated++
 	}
 
 	if titlesCreated > 0 {
 		campaign.TitlesGenerated = true
-		// todo: add total titles
+		err = this.CampaignService.CountTotalTitles(campaign)
+		if err != nil {
+			fmt.Println("\n this.CampaignService.CountTotalTitles Error: ", err.Error())
+			c.String(http.StatusInternalServerError, "Can not update campaign.")
+			return
+		}
 		err = this.CampaignService.Update(campaign)
 		if err != nil {
 			fmt.Println("\n this.CampaignService.Update Error: ", err.Error())
@@ -246,7 +251,7 @@ func (this *WebServer) campaignGenerateTitles(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{"total": titlesCreated})
+	c.JSON(http.StatusOK, gin.H{"count": titlesCreated})
 }
 
 func (this *WebServer) campaignGetTitles(c *gin.Context) {
@@ -288,4 +293,88 @@ func (this *WebServer) campaignGetTitles(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"items": items, "total": len(items)})
+}
+
+func (this *WebServer) campaignAddTitles(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+	if err != nil {
+		_ = c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	campaign, err := this.CampaignService.FindOne(campaigns.Params{
+		Id:     int(id),
+		UserId: this.getUser(c).Id,
+	})
+	if err != nil {
+		fmt.Println("\n this.CampaignService.FindOne Error: ", err.Error())
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	type request struct {
+		Titles string `validate:"required,text"`
+	}
+
+	req := &request{Titles: c.PostForm("titles")}
+	err = validator.GetValidatorInstance().Struct(req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": validator.JsonErrors(err)})
+		return
+	}
+
+	titlesCreated := 0
+	_titles := strings.Split(req.Titles, "\n")
+	for _, title := range _titles {
+		_title := &titles.Title{
+			UserId:     this.getUser(c).Id,
+			CampaignId: campaign.Id,
+			Title:      title,
+			IpAddress:  c.ClientIP(),
+		}
+
+		has, err := this.TitleService.Has(_title)
+		if err != nil {
+			fmt.Printf("Has title '%s' err: \n%v\n", title, err)
+			continue
+		}
+		if has {
+			fmt.Printf("Title already exists '%s', campaignId: %d \n", title, _title.CampaignId)
+			continue
+		}
+
+		tags, err := this.RapidtagsService.GetTags(title)
+		if err != nil {
+			fmt.Printf("Insert title '%s' err: \n%v\n", title, err)
+			continue
+		}
+
+		_title.Tags = strings.Join(tags, ",")
+
+		err = this.TitleService.Insert(_title)
+		if err != nil {
+			fmt.Printf("Insert title '%s' err: \n%v\n", title, err)
+			continue
+		}
+
+		titlesCreated++
+	}
+
+	if titlesCreated > 0 {
+		campaign.TitlesGenerated = true
+		err = this.CampaignService.CountTotalTitles(campaign)
+		if err != nil {
+			fmt.Println("\n this.CampaignService.CountTotalTitles Error: ", err.Error())
+			c.String(http.StatusInternalServerError, "Can not update campaign.")
+			return
+		}
+		err = this.CampaignService.Update(campaign)
+		if err != nil {
+			fmt.Println("\n this.CampaignService.Update Error: ", err.Error())
+			c.String(http.StatusInternalServerError, "Can not update campaign.")
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"count": titlesCreated})
 }

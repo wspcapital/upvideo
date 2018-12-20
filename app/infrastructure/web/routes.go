@@ -63,8 +63,9 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 		campaigns.POST("", this.campaignCreate)
 		campaigns.PUT("/:id", this.campaignUpdate)
 		campaigns.DELETE("/:id", this.campaignDelete)
-		videos.POST("/:id/gen_titles", this.campaignGenerateTitles)
-		videos.GET("/:id/get_titles", this.campaignGetTitles)
+		campaigns.POST("/:id/gen_titles", this.campaignGenerateTitles)
+		campaigns.GET("/:id/get_titles", this.campaignGetTitles)
+		campaigns.POST("/:id/add_titles", this.campaignAddTitles)
 	}
 
 	// titles group api
