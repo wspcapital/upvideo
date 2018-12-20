@@ -81,7 +81,7 @@ func (this *Repository) Insert(item *Title) error {
 
 	mfr := &maxFrameRate{}
 
-	err := this.db.QueryRow("SELECT MAX(FrameRate) AS maxFrameRate, Resolution AS maxResolution FROM titles WHERE Resolution in (SELECT MAX(Resolution) FROM titles WHERE CampaignId=?) LIMIT 1", item.CampaignId).
+	err := this.db.QueryRow("SELECT MAX(FrameRate) AS maxFrameRate, Resolution AS maxResolution FROM titles WHERE Resolution in (SELECT MAX(Resolution) FROM titles WHERE CampaignId=?) GROUP BY Resolution LIMIT 1", item.CampaignId).
 		Scan(&mfr.FrameRate, &mfr.Resolution)
 	if err != nil {
 		return err
