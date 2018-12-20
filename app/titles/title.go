@@ -21,6 +21,7 @@ type Title struct {
 	File       string     `json:"file"`
 	TmpFile    string     `json:"tmp_file"`
 	YoutubeId  string     `json:"youtube_id"`
+	YoutubeUrl string     `json:"youtube_url"`
 	Posted     bool       `json:"posted"`
 	Converted  bool       `json:"converted"`
 	Pending    bool       `json:"pending"`
