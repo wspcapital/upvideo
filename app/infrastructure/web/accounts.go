@@ -1,10 +1,10 @@
 package web
 
 import (
-	"bitbucket.org/marketingx/upvideo/app/accounts"
-	"bitbucket.org/marketingx/upvideo/utils"
-	"bitbucket.org/marketingx/upvideo/validator"
-	"bitbucket.org/marketingx/upvideo/youtubeauth"
+	"bitbucket.org/marketingx/upvideo/app/storage/accounts"
+	"bitbucket.org/marketingx/upvideo/app/utils/utils"
+	"bitbucket.org/marketingx/upvideo/app/utils/validator"
+	"bitbucket.org/marketingx/upvideo/app/utils/youtubeauth"
 	"bytes"
 	"database/sql"
 	"fmt"

@@ -1,9 +1,9 @@
 package web
 
 import (
-	"bitbucket.org/marketingx/upvideo/app/campaigns"
-	"bitbucket.org/marketingx/upvideo/app/titles"
-	"bitbucket.org/marketingx/upvideo/validator"
+	"bitbucket.org/marketingx/upvideo/app/storage/campaigns"
+	"bitbucket.org/marketingx/upvideo/app/storage/titles"
+	"bitbucket.org/marketingx/upvideo/app/utils/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "log"

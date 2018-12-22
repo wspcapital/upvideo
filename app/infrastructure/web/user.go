@@ -2,7 +2,7 @@ package web
 
 import (
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
-	"bitbucket.org/marketingx/upvideo/validator"
+	"bitbucket.org/marketingx/upvideo/app/utils/validator"
 	_ "errors"
 	"fmt"
 	"github.com/gin-gonic/gin"

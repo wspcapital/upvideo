@@ -2,7 +2,7 @@ package email
 
 import (
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
-	"bitbucket.org/marketingx/upvideo/aws"
+	"bitbucket.org/marketingx/upvideo/app/utils/aws"
 	"bitbucket.org/marketingx/upvideo/config"
 	"bytes"
 	"fmt"

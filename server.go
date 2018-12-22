@@ -1,20 +1,20 @@
 package main
 
 import (
-	"bitbucket.org/marketingx/upvideo/app/accounts"
-	"bitbucket.org/marketingx/upvideo/app/campaigns"
+	"bitbucket.org/marketingx/upvideo/app/storage/accounts"
+	"bitbucket.org/marketingx/upvideo/app/storage/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"bitbucket.org/marketingx/upvideo/app/email"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure"
 	"bitbucket.org/marketingx/upvideo/app/infrastructure/web"
-	"bitbucket.org/marketingx/upvideo/app/jobs"
-	"bitbucket.org/marketingx/upvideo/app/services/keywordtool"
-	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
-	"bitbucket.org/marketingx/upvideo/app/titles"
-	"bitbucket.org/marketingx/upvideo/app/videos"
+	"bitbucket.org/marketingx/upvideo/app/storage/jobs"
+	"bitbucket.org/marketingx/upvideo/app/utils/keywordtool"
+	"bitbucket.org/marketingx/upvideo/app/utils/rapidtags"
+	"bitbucket.org/marketingx/upvideo/app/storage/titles"
+	"bitbucket.org/marketingx/upvideo/app/storage/videos"
 	"bitbucket.org/marketingx/upvideo/app/storage/shortlinks"
-	"bitbucket.org/marketingx/upvideo/aws"
+	"bitbucket.org/marketingx/upvideo/app/utils/aws"
 	"bitbucket.org/marketingx/upvideo/config"
 	"database/sql"
 	"fmt"
@@ -22,7 +22,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	_ "strconv"
 	"strings"
 )
 

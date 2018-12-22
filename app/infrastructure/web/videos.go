@@ -1,9 +1,9 @@
 package web
 
 import (
-	"bitbucket.org/marketingx/upvideo/app/videos"
-	"bitbucket.org/marketingx/upvideo/aws"
-	"bitbucket.org/marketingx/upvideo/validator"
+	"bitbucket.org/marketingx/upvideo/app/storage/videos"
+	"bitbucket.org/marketingx/upvideo/app/utils/aws"
+	"bitbucket.org/marketingx/upvideo/app/utils/validator"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"

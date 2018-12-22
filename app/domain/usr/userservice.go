@@ -2,7 +2,7 @@ package usr
 
 import (
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
-	"bitbucket.org/marketingx/upvideo/utils"
+	"bitbucket.org/marketingx/upvideo/app/utils/utils"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
