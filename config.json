@@ -1,21 +1,21 @@
 {
 	"Dsn": "root:password@tcp(127.0.0.1:3306)/upload_app?parseTime=true",
     "CheckInterval": 5,
-    "youtubeuploader_cmd": "./youtubeuploader/youtubeuploader",
-    "youtubeuploader_path": "./youtubeuploader",
-	"testvideo": "./youtubeuploader/test.mp4",
-	"testvideo_meta": "./youtubeuploader-testvideo.meta.json",
+    "youtubeuploader_cmd": "./.tmp/upload",
+    "youtubeuploader_path": "./.tmp",
+	"testvideo": "./.tmp/test.mp4",
+	"testvideo_meta": "./testvideo.meta.json",
 	"Session" : {
 		"Storage": "db",
 		"TTLMinutes": 0
 	},
 	"WebServer" : {
 		"Bind": ":3000",
-		"StaticDir": "../frontend",
+		"StaticDir": "./frontend",
 		"SSL": false,
 		"DebugMode": false,
 		"CertCache": "/var/www/.cache",
-		"HostsWhitelist": ["todo.local"]
+		"HostsWhitelist": ["upvideo.local"]
 	},
 	"AWS": {
 		"ACCESS_KEY_ID": "",
@@ -27,7 +27,7 @@
 		"from": "no-reply@amazon.com",
 		"reply": "realemail@amazon.com",
 		"templates": {
-			"restore_password": "./app/email/templates/restore-password.html"
+			"restore_password": "./templates/email/restore-password.html"
 		}
 	},
 	"keywordtool.io": {

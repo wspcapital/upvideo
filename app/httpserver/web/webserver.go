@@ -5,7 +5,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/storage/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
-	"bitbucket.org/marketingx/upvideo/app/email"
+	"bitbucket.org/marketingx/upvideo/app/domain/email"
 	"bitbucket.org/marketingx/upvideo/app/storage/jobs"
 	"bitbucket.org/marketingx/upvideo/app/utils/keywordtool"
 	"bitbucket.org/marketingx/upvideo/app/utils/rapidtags"

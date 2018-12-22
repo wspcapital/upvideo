@@ -1,11 +1,9 @@
 .idea/
 youtubeuploader/
-
+.tmp/
 server_go
 
 test.config.json
 dev.config.json
 prod.config.json
-
-
 server_linux

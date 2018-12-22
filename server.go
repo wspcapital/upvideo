@@ -5,9 +5,9 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/storage/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
-	"bitbucket.org/marketingx/upvideo/app/email"
-	"bitbucket.org/marketingx/upvideo/app/infrastructure"
-	"bitbucket.org/marketingx/upvideo/app/infrastructure/web"
+	"bitbucket.org/marketingx/upvideo/app/domain/email"
+	"bitbucket.org/marketingx/upvideo/app/httpserver"
+	"bitbucket.org/marketingx/upvideo/app/httpserver/web"
 	"bitbucket.org/marketingx/upvideo/app/storage/jobs"
 	"bitbucket.org/marketingx/upvideo/app/utils/keywordtool"
 	"bitbucket.org/marketingx/upvideo/app/utils/rapidtags"
@@ -15,6 +15,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/storage/videos"
 	"bitbucket.org/marketingx/upvideo/app/storage/shortlinks"
 	"bitbucket.org/marketingx/upvideo/app/utils/aws"
+	"bitbucket.org/marketingx/upvideo/app/utils/utils"
 	"bitbucket.org/marketingx/upvideo/config"
 	"database/sql"
 	"fmt"
@@ -41,12 +42,13 @@ func main() {
 	initDbTables(db)
 
 	err = aws.AWSInitSession(&cfg.AWS)
+	utils.InitProject()
 
 	var sessionRepository session.Repository
 	if cfg.Session.Storage == "db" {
-		sessionRepository = infrastructure.NewDbSession(db)
+		sessionRepository = httpserver.NewDbSession(db)
 	} else if cfg.Session.Storage == "memory" {
-		sessionRepository = infrastructure.GetMemSession()
+		sessionRepository = httpserver.GetMemSession()
 	} else {
 		fmt.Println("Incorrect session storage specified")
 		os.Exit(1)
@@ -61,7 +63,7 @@ func main() {
 	shortlinksService := shortlinks.NewService(shortlinks.NewRepository(db))
 
 	webServer := &web.WebServer{
-		UserService:        usr.NewUserService(infrastructure.NewUserRepository(db)),
+		UserService:        usr.NewUserService(httpserver.NewUserRepository(db)),
 		SessionService:     session.NewService(sessionRepository),
 		VideoService:       videoService,
 		AccountService:     accountService,

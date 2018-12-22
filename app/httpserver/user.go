@@ -1,4 +1,4 @@
-package infrastructure
+package httpserver
 
 import (
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
