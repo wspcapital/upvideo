@@ -13,6 +13,7 @@ var (
 	titleRegexp       = regexp.MustCompile("^[\\p{L}\\d_\\s\\-]*$")
 	textRegexp        = regexp.MustCompile("^[\\p{L}\\d_~!@#$%^&*()`\\[\\]{};':,./<>?|\\s\\-]*$")
 	confirmCodeRegexp = regexp.MustCompile("^[a-zA-Z0-9/_\\-]*$")
+	shortLink         = regexp.MustCompile("^[a-zA-Z0-9/_\\-]{9}")
 )
 
 func init() {
@@ -29,6 +30,7 @@ func init() {
 	_ = validate.RegisterValidation("title", validateTitle)
 	_ = validate.RegisterValidation("text", validateText)
 	_ = validate.RegisterValidation("confirm_code", validateConfirmCode)
+	_ = validate.RegisterValidation("shortlink", validateShortLink)
 }
 
 func GetValidatorInstance() *validator.Validate {
@@ -46,6 +48,11 @@ func validateText(fl validator.FieldLevel) bool {
 func validateConfirmCode(fl validator.FieldLevel) bool {
 	return confirmCodeRegexp.MatchString(fl.Field().String())
 }
+
+func validateShortLink(fl validator.FieldLevel) bool {
+	return shortLink.MatchString(fl.Field().String())
+}
+
 
 func JsonErrors(errs interface{}) (json map[string]interface{}) {
 	json = make(map[string]interface{})

@@ -11,6 +11,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
 	"bitbucket.org/marketingx/upvideo/app/titles"
 	"bitbucket.org/marketingx/upvideo/app/videos"
+	"bitbucket.org/marketingx/upvideo/app/storage/shortlinks"
 	"bitbucket.org/marketingx/upvideo/config"
 	"fmt"
 	"github.com/gin-gonic/autotls"
@@ -29,6 +30,7 @@ type WebServer struct {
 	AccountService     *accounts.Service
 	CampaignService    *campaigns.Service
 	TitleService       *titles.Service
+	ShortlinksService  *shortlinks.Service
 	JobService         *jobs.Service
 	KeywordtoolService *keywordtool.Service
 	RapidtagsService   *rapidtags.Service

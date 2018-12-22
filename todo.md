@@ -18,3 +18,4 @@ TODO UpVideo.app
 
 
 
+-- when i delete campaign, need to download all titels related.

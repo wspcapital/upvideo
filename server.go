@@ -13,6 +13,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/services/rapidtags"
 	"bitbucket.org/marketingx/upvideo/app/titles"
 	"bitbucket.org/marketingx/upvideo/app/videos"
+	"bitbucket.org/marketingx/upvideo/app/storage/shortlinks"
 	"bitbucket.org/marketingx/upvideo/aws"
 	"bitbucket.org/marketingx/upvideo/config"
 	"database/sql"
@@ -53,11 +54,12 @@ func main() {
 	}
 	fmt.Printf("config: %v\n", cfg)
 
-	titlesService := titles.NewService(titles.NewRepository(db))
-	videoService := videos.NewService(videos.NewRepository(db))
-	jobsService := jobs.NewService(jobs.NewRepository(db))
-	accountService := accounts.NewService(accounts.NewRepository(db))
-	campaignService := campaigns.NewService(campaigns.NewRepository(db))
+	titlesService     := titles.NewService(titles.NewRepository(db))
+	videoService      := videos.NewService(videos.NewRepository(db))
+	jobsService       := jobs.NewService(jobs.NewRepository(db))
+	accountService    := accounts.NewService(accounts.NewRepository(db))
+	campaignService   := campaigns.NewService(campaigns.NewRepository(db))
+	shortlinksService := shortlinks.NewService(shortlinks.NewRepository(db))
 
 	webServer := &web.WebServer{
 		UserService:        usr.NewUserService(infrastructure.NewUserRepository(db)),
@@ -70,6 +72,7 @@ func main() {
 		KeywordtoolService: keywordtool.NewService(&cfg.Keywordtool),
 		RapidtagsService:   rapidtags.NewService(),
 		EmailService:       email.NewService(&cfg.Email),
+		ShortlinksService:  shortlinksService,
 		Params:             cfg.WebServer,
 		Config:             cfg,
 	}
