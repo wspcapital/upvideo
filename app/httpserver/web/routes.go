@@ -97,5 +97,16 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 		_shortlinks.DELETE("/:id", this.shortlinkDelete)
 	}
 
+	// inites group apis.
+	invite := r.Group("/api/invites")
+	invite.Use(this.requireAuth)
+	{
+		invite.GET("/", this.inviteIndex)
+		invite.GET("/:id", this.inviteView)
+		invite.POST("/", this.inviteCreate)
+		invite.PUT("/:id", this.inviteUpdate)
+		invite.DELETE("/:id", this.inviteDelete)
+	}
+
 
 }
