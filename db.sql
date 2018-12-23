@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `AccountId` int(11) NOT NULL,
   `ForgotPasswordToken` varchar(36) NULL,
   `ForgotPasswordTokenExpiredAt` TIMESTAMP NULL,
+  `Created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
   UNIQUE (`Email`),
   UNIQUE (`APIKey`),

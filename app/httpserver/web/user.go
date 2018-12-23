@@ -3,7 +3,7 @@ package web
 import (
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"bitbucket.org/marketingx/upvideo/app/utils/validator"
-	"errors"
+	_"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -16,7 +16,13 @@ type ProfileResponse struct {
 }
 
 func (this *WebServer) signin(c *gin.Context) {
-	user, err := this.UserService.Login(c.PostForm("login"), c.PostForm("password"))
+
+	if len(c.PostForm("username")) <= 3 || len(c.PostForm("password")) <= 3  {
+		c.String(403, "username or password is invalid.")
+		return
+	}
+
+	user, err := this.UserService.Login(c.PostForm("username"), c.PostForm("password"))
 	if err != nil {
 		c.AbortWithError(400, err)
 		return
@@ -34,14 +40,14 @@ func (this *WebServer) signin(c *gin.Context) {
 func (this *WebServer) signup(c *gin.Context) {
 
 	if this.Params.Registration == false {
-		c.AbortWithError(403, errors.New("Registration Unavailable"))
+		c.String(403, "Registration for new members has ben disabled by admin.")
 		return
 	}
 	
 	inviteCode := c.PostForm("code")
 	err := this.InviteService.CheckInvite(inviteCode)
 	if this.Params.InviteOnly && err != nil {
-		c.AbortWithError(403, err)
+		c.String(403, "Invite code requested")
 		return
 	}
 
@@ -85,7 +91,7 @@ func (this *WebServer) signup(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(user)
+	//fmt.Println(user)
 	sess := this.SessionService.Create()
 	sess.Data["userId"] = strconv.Itoa(user.Id)
 	err = this.SessionService.Update(sess)
@@ -121,21 +127,21 @@ func (this *WebServer) userForgotPassword(c *gin.Context) {
 
 	user, err := this.UserService.FindByEmail(req.Email)
 	if err != nil {
-		fmt.Println("UserService.FindByEmail: " + err.Error())
+		//fmt.Println("UserService.FindByEmail: " + err.Error())
 		c.String(http.StatusBadRequest, "user not found")
 		return
 	}
 
 	err = this.UserService.SetForgotPasswordToken(user)
 	if err != nil {
-		fmt.Println("UserService.SetForgotPasswordToken: " + err.Error())
+		//fmt.Println("UserService.SetForgotPasswordToken: " + err.Error())
 		c.String(http.StatusInternalServerError, "Try again later")
 		return
 	}
 
 	err = this.EmailService.SendRestorePasswordEmail(user)
 	if err != nil {
-		fmt.Println("UserService.SetForgotPasswordToken: " + err.Error())
+		//fmt.Println("UserService.SetForgotPasswordToken: " + err.Error())
 		c.String(http.StatusInternalServerError, "Try again later")
 		return
 	}
