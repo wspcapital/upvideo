@@ -3,7 +3,7 @@ package web
 import (
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
 	"bitbucket.org/marketingx/upvideo/app/utils/validator"
-	_ "errors"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -33,16 +33,17 @@ func (this *WebServer) signin(c *gin.Context) {
 
 func (this *WebServer) signup(c *gin.Context) {
 
-	// if this.Params.Registration == false {
-	// 	c.AbortWithError(403, errors.New("Registration Unavailable"))
-	// 	return
-	// }
-	// inviteCode := c.PostForm("code")
-	// err := this.InviteService.CheckInvite(inviteCode)
-	// if this.Params.InviteOnly && err != nil {
-	// 	c.AbortWithError(403, err)
-	// 	return
-	// }
+	if this.Params.Registration == false {
+		c.AbortWithError(403, errors.New("Registration Unavailable"))
+		return
+	}
+	
+	inviteCode := c.PostForm("code")
+	err := this.InviteService.CheckInvite(inviteCode)
+	if this.Params.InviteOnly && err != nil {
+		c.AbortWithError(403, err)
+		return
+	}
 
 	type UserRequest struct {
 		Email    string `validate:"required,email"`
@@ -55,7 +56,7 @@ func (this *WebServer) signup(c *gin.Context) {
 	}
 
 	// validate request
-	err := validator.GetValidatorInstance().Struct(req)
+	err  = validator.GetValidatorInstance().Struct(req)
 	if err != nil {
 		c.String(http.StatusBadRequest, "username or password not valid")
 		return

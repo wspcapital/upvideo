@@ -13,6 +13,8 @@
 		"Bind": ":3000",
 		"StaticDir": "./frontend",
 		"SSL": false,
+		"Registration": true,
+		"InviteOnly": false,
 		"DebugMode": false,
 		"CertCache": "/var/www/.cache",
 		"HostsWhitelist": ["upvideo.local"]

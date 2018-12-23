@@ -14,6 +14,7 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/storage/titles"
 	"bitbucket.org/marketingx/upvideo/app/storage/videos"
 	"bitbucket.org/marketingx/upvideo/app/storage/shortlinks"
+	"bitbucket.org/marketingx/upvideo/app/storage/invites"
 	"bitbucket.org/marketingx/upvideo/app/utils/aws"
 	"bitbucket.org/marketingx/upvideo/app/utils/utils"
 	"bitbucket.org/marketingx/upvideo/config"
@@ -61,6 +62,7 @@ func main() {
 	accountService    := accounts.NewService(accounts.NewRepository(db))
 	campaignService   := campaigns.NewService(campaigns.NewRepository(db))
 	shortlinksService := shortlinks.NewService(shortlinks.NewRepository(db))
+	invitesService    := invites.NewService(invites.NewRepository(db))
 
 	webServer := &web.WebServer{
 		UserService:        usr.NewUserService(httpserver.NewUserRepository(db)),
@@ -74,6 +76,7 @@ func main() {
 		RapidtagsService:   rapidtags.NewService(),
 		EmailService:       email.NewService(&cfg.Email),
 		ShortlinksService:  shortlinksService,
+		InviteService:      invitesService,
 		Params:             cfg.WebServer,
 		Config:             cfg,
 	}
