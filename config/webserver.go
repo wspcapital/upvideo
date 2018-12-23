@@ -1,6 +1,7 @@
 package config
 
 type WebServerParams struct {
+	Production     bool
 	Bind           string
 	StaticDir      string
 	DebugMode      bool

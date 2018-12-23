@@ -11,6 +11,7 @@
 	},
 	"WebServer" : {
 		"Bind": ":3000",
+		"Production" : false,
 		"StaticDir": "./frontend",
 		"SSL": false,
 		"Registration": true,

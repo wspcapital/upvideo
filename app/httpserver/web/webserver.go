@@ -44,6 +44,10 @@ func (this *WebServer) Start() {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
+	if this.Params.Production {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	// cross Origin helper
 	r.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")

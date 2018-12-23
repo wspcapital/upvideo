@@ -93,12 +93,12 @@ func (this *WebServer) signup(c *gin.Context) {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user"})
 	} else {
-		// err = this.InviteService.ClearInvite(inviteCode)
-		// if this.Params.InviteOnly && err != nil {
-		// 	this.UserService.Delete(user)
-		// 	c.AbortWithError(500, err)
-		// 	return
-		// }
+		err = this.InviteService.ClearInvite(inviteCode)
+		if this.Params.InviteOnly && err != nil {
+			this.UserService.Delete(user)
+			c.AbortWithError(500, err)
+			return
+		}
 		c.JSON(http.StatusOK, gin.H{"token": sess.Id})
 	}
 }
