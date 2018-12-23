@@ -37,7 +37,7 @@ func (this *WebServer) inviteCreate(c *gin.Context) {
 	c.BindJSON(unsafe)
 	invite := &invites.Invite{}
 	invite.Title = unsafe.Title
-	invite.Code = unsafe.Code
+	//invite.Code = unsafe.Code
 	invite.UserId = this.getUser(c).Id
 	err := this.InviteService.Insert(invite)
 	if err != nil {

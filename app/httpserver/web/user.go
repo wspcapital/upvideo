@@ -18,13 +18,13 @@ type ProfileResponse struct {
 func (this *WebServer) signin(c *gin.Context) {
 
 	if len(c.PostForm("username")) <= 3 || len(c.PostForm("password")) <= 3  {
-		c.String(403, "username or password is invalid.")
+		c.String(403, "Username or Password is Invalid.")
 		return
 	}
 
 	user, err := this.UserService.Login(c.PostForm("username"), c.PostForm("password"))
 	if err != nil {
-		c.AbortWithError(400, err)
+		c.String(403, "Username or Password is Invalid.")
 		return
 	}
 	sess := this.SessionService.Create()
