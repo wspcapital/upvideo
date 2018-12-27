@@ -149,6 +149,7 @@ CREATE TABLE IF NOT EXISTS `shortlinks` (
   `UserId` int(11) NOT NULL,
   `UniqId` varchar(25) NOT NULL,
   `Url` text NOT NULL,
+  `Counter` bigint(20) NOT NULL DEFAULT 0,
   `Created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),

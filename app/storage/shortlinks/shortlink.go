@@ -9,6 +9,7 @@ type Shortlink struct {
 	UserId      int        `json:"user_id"`
 	UniqId      string     `json:"uniq_id"`
 	Url         string     `json:"url"`
+	Counter     int64      `json:"counter"`
 	CreatedAt   *time.Time `json:"created_at"`
 	UpdatedAt   *time.Time `json:"updated_at"`
 }

@@ -225,5 +225,17 @@ func (this *WebServer) shortlinkExternal(c *gin.Context) {
 		return
 	}
 
+
+	_shortlink.Counter++
+
+
+	err = this.ShortlinksService.Update(_shortlink)
+	if err != nil {
+		c.AbortWithError(500, err)
+		return
+	}
+
+
+
 	c.Redirect(http.StatusTemporaryRedirect, _shortlink.Url)
 }

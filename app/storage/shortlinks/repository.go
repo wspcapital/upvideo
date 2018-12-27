@@ -106,10 +106,11 @@ func (this *Repository) Insert(item *Shortlink) error {
 }
 
 func (this *Repository) Update(item *Shortlink) error {
-	_, err := this.db.Exec("UPDATE shortlinks SET UserId=?, UniqId=?, Url=?, Created_at=?, Updated_at=NOW() WHERE Id=?",
+	_, err := this.db.Exec("UPDATE shortlinks SET UserId=?, UniqId=?, Url=?, Counter=?, Created_at=?, Updated_at=NOW() WHERE Id=?",
 		item.UserId,
 		item.UniqId,
 		item.Url,
+		item.Counter,
 		item.CreatedAt,
 		item.Id,
 	)
