@@ -7,7 +7,7 @@
 	"testvideo_meta": "./testvideo.meta.json",
 	"Session" : {
 		"Storage": "db",
-		"TTLMinutes": 0
+		"TTLMinutes": 30,
 	},
 	"WebServer" : {
 		"Bind": ":3000",

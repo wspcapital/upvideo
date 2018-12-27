@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/robfig/cron"
 	"bitbucket.org/marketingx/upvideo/app/storage/accounts"
 	"bitbucket.org/marketingx/upvideo/app/storage/campaigns"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
@@ -25,6 +26,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"strconv"
 )
 
 func main() {
@@ -80,6 +82,20 @@ func main() {
 		Params:             cfg.WebServer,
 		Config:             cfg,
 	}
+
+	// setup cron
+	cronHandler := cron.New()
+	cronHandler.AddFunc("@every "+strconv.Itoa(cfg.CheckInterval)+"m", func() {
+		webServer.ShortlinksService.CheckAllLinks()
+	})
+	
+	if cfg.Session.TTLMinutes > 0 {
+		cronHandler.AddFunc("@every 5m", func() {
+			sessionRepository.Cleanup(cfg.Session.TTLMinutes)
+		})
+	}
+
+	cronHandler.Start()
 
 	webServer.Start()
 }

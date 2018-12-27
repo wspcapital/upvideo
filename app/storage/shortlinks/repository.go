@@ -28,6 +28,8 @@ func (this *Repository) fetch(query sq.SelectBuilder) ([]*Shortlink, error) {
 			&item.UserId,
 			&item.UniqId,
 			&item.Url,
+			&item.Counter,
+			&item.Disabled,
 			&item.CreatedAt,
 			&item.UpdatedAt,
 		)
@@ -48,6 +50,8 @@ func (this *Repository) FindAll(params Params) (result []*Shortlink, err error) 
 		"UserId",
 		"UniqId",
 		"Url",
+		"Counter",
+		"Disabled",
 		"Created_at",
 		"Updated_at").From("shortlinks")
 
@@ -62,6 +66,10 @@ func (this *Repository) FindAll(params Params) (result []*Shortlink, err error) 
 	if params.Url != "" {
 		query = query.Where(sq.Eq{"Url": params.Url})
 	}
+
+	// if params.Disabled {
+	// 	query = query.Where(sq.Eq{"Disabled": params.Disabled})
+	// }
 
 	if params.Limit != 0 {
 		query = query.Limit(params.Limit)
@@ -106,11 +114,12 @@ func (this *Repository) Insert(item *Shortlink) error {
 }
 
 func (this *Repository) Update(item *Shortlink) error {
-	_, err := this.db.Exec("UPDATE shortlinks SET UserId=?, UniqId=?, Url=?, Counter=?, Created_at=?, Updated_at=NOW() WHERE Id=?",
+	_, err := this.db.Exec("UPDATE shortlinks SET UserId=?, UniqId=?, Url=?, Counter=?, Disabled=?, Created_at=?, Updated_at=NOW() WHERE Id=?",
 		item.UserId,
 		item.UniqId,
 		item.Url,
 		item.Counter,
+		item.Disabled,
 		item.CreatedAt,
 		item.Id,
 	)

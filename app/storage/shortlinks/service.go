@@ -2,6 +2,8 @@ package shortlinks
 
 import (
 	"database/sql"
+	"fmt"
+	_"strconv"
 )
 
 type Service struct {
@@ -36,6 +38,40 @@ func (this *Service) Update(item *Shortlink) error {
 func (this *Service) Delete(item *Shortlink) error {
 	return this.repo.Delete(item)
 }
+
+func (this *Service) CheckAllLinks() error {
+	var _shortlink []*Shortlink
+
+	fmt.Println("check links")
+
+	_shortlink, err := this.repo.FindAll(Params{
+		Id: 0,
+		Disabled: false,
+		})
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	for _, link := range _shortlink {
+		if !link.Disabled && CheckDisabledUrl(link.Url) {
+			link.Disabled = true
+
+			err = this.repo.Update(link)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+			fmt.Println("This shortlink id : ", link.UniqId, "has beed disabled")
+
+		}
+	}
+
+	return nil
+}
+
 
 func NewService(repo *Repository) *Service {
 	return &Service{repo: repo}
