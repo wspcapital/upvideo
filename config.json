@@ -21,10 +21,10 @@
 		"HostsWhitelist": ["upvideo.local"]
 	},
 	"AWS": {
-		"ACCESS_KEY_ID": "",
-		"SECRET_KEY": "",
-		"REGION": "us-west-1",
-		"bucket": ""
+		"ACCESS_KEY_ID": "AKIAJNQK6XOOCHBIXUFA",
+		"SECRET_KEY": "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",
+		"REGION": "us-east-1",
+		"bucket": "uploadexpert"
 	},
 	"email": {
 		"from": "no-reply@amazon.com",
@@ -34,6 +34,6 @@
 		}
 	},
 	"keywordtool.io": {
-		"API_KEY": ""
+		"API_KEY": "dc4f0ba72cd7580f65ce41674d5aae829968a2be"
 	}
 }
