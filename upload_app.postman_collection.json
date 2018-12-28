@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "9f7e2343-81f4-4bf0-bd66-140ecddcac3d",
-		"name": "upload_app",
+		"_postman_id": "68c9c1f6-c970-482a-ad2a-d141677f0370",
+		"name": "upload_app copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -61,17 +61,16 @@
 							]
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/login",
+							"raw": "127.0.01:3000/auth/signin",
 							"host": [
 								"127",
 								"0",
-								"0",
-								"1"
+								"01"
 							],
 							"port": "3000",
 							"path": [
-								"api",
-								"login"
+								"auth",
+								"signin"
 							]
 						}
 					},
@@ -107,7 +106,7 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "krakiun",
+									"value": "postman@upload.expert",
 									"type": "text"
 								},
 								{
@@ -118,17 +117,13 @@
 							]
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/register",
+							"raw": "{{url}}/auth/signup?",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{url}}"
 							],
-							"port": "3000",
 							"path": [
-								"api",
-								"register"
+								"auth",
+								"signup"
 							],
 							"query": [
 								{
@@ -234,312 +229,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/profile",
+							"raw": "{{url}}/api/profile",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{url}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"profile"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "127.0.0.1:3000/api/forgot-password",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "b29c6223-c8ca-4633-b58c-aee9e3b4a9c1",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "email",
-									"value": "{{my_email}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "127.0.0.1:3000/api/forgot-password",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"forgot-password"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "127.0.0.1:3000/api/restore-password",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "b29c6223-c8ca-4633-b58c-aee9e3b4a9c1",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "email",
-									"value": "{{my_email}}",
-									"type": "text"
-								},
-								{
-									"key": "token",
-									"value": "DurQpb0NdOADDg2eowHzJPTyf7MbLmGrsuDu",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "password",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "127.0.0.1:3000/api/restore-password",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"restore-password"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "127.0.0.1:3000/api/change-password",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "b29c6223-c8ca-4633-b58c-aee9e3b4a9c1",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "password",
-									"value": "password",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "127.0.0.1:3000/api/change-password",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"change-password"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "register",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "email",
-										"value": "test3",
-										"type": "text"
-									},
-									{
-										"key": "password",
-										"value": "test123456",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "127.0.0.1:3000/api/register",
-									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"register"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Access-Control-Allow-Headers",
-									"value": "content-type, Authorization"
-								},
-								{
-									"key": "Access-Control-Allow-Methods",
-									"value": "GET, POST, PUT, DELETE"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "*"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Thu, 06 Dec 2018 08:35:46 GMT"
-								},
-								{
-									"key": "Content-Length",
-									"value": "36"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"token\": \"LX58zkI2ggzX9iVitLU3ed_J\"\n}"
-						}
-					]
-				},
-				{
-					"name": "127.0.0.1:3000/api/reset-apikey",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "b29c6223-c8ca-4633-b58c-aee9e3b4a9c1",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"token\", jsonData.token);",
-									"postman.setEnvironmentVariable(\"apikey\", jsonData.apikey);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {},
-						"url": {
-							"raw": "127.0.0.1:3000/api/reset-apikey",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"reset-apikey"
 							]
 						}
 					},
@@ -551,7 +247,7 @@
 			"name": "videos",
 			"item": [
 				{
-					"name": "127.0.0.1:3000/api/videos",
+					"name": "127.0.0.1:3000/api/videos/",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -587,7 +283,7 @@
 					"response": []
 				},
 				{
-					"name": "127.0.0.1:3000/api/videos",
+					"name": "127.0.0.1:3000/api/videos/",
 					"event": [
 						{
 							"listen": "test",
@@ -665,7 +361,7 @@
 							]
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/videos",
+							"raw": "127.0.0.1:3000/api/videos/",
 							"host": [
 								"127",
 								"0",
@@ -675,7 +371,8 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"videos"
+								"videos",
+								""
 							]
 						}
 					},
@@ -714,7 +411,51 @@
 								"value": "multipart/form-data"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Title",
+									"value": "Video title",
+									"type": "text"
+								},
+								{
+									"key": "Description",
+									"value": "Video description",
+									"type": "text"
+								},
+								{
+									"key": "Tags",
+									"value": "video tags",
+									"type": "text"
+								},
+								{
+									"key": "Category",
+									"value": "video category",
+									"type": "text"
+								},
+								{
+									"key": "Language",
+									"value": "AA",
+									"type": "text"
+								},
+								{
+									"key": "File",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "Playlist",
+									"value": "playlist_dadas",
+									"type": "text"
+								},
+								{
+									"key": "IpAddress",
+									"value": "dasdasd",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
 							"raw": "127.0.0.1:3000/api/videos/:id/gen_titles",
 							"host": [
@@ -733,7 +474,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "20"
+									"value": "18"
 								}
 							]
 						}
@@ -800,10 +541,7 @@
 			"name": "accounts",
 			"item": [
 				{
-					"name": "127.0.0.1:3000/api/accounts",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
+					"name": "127.0.0.1:3000/api/accounts/",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -817,9 +555,12 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/accounts?limit=4",
+							"raw": "127.0.0.1:3000/api/accounts/?limit=4",
 							"host": [
 								"127",
 								"0",
@@ -829,7 +570,8 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"accounts"
+								"accounts",
+								""
 							],
 							"query": [
 								{
@@ -842,7 +584,7 @@
 					"response": []
 				},
 				{
-					"name": "127.0.0.1:3000/api/accounts",
+					"name": "127.0.0.1:3000/api/accounts/",
 					"event": [
 						{
 							"listen": "test",
@@ -906,7 +648,7 @@
 							]
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/accounts",
+							"raw": "127.0.0.1:3000/api/accounts/",
 							"host": [
 								"127",
 								"0",
@@ -916,7 +658,8 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"accounts"
+								"accounts",
+								""
 							]
 						}
 					},
@@ -973,7 +716,8 @@
 								"accounts",
 								"confirm"
 							]
-						}
+						},
+						"description": "confirm code for add new account"
 					},
 					"response": []
 				},
@@ -1043,7 +787,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/accounts",
+							"raw": "127.0.0.1:3000/api/accounts/",
 							"host": [
 								"127",
 								"0",
@@ -1053,7 +797,8 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"accounts"
+								"accounts",
+								""
 							]
 						}
 					},
@@ -1112,7 +857,7 @@
 			"name": "titles",
 			"item": [
 				{
-					"name": "127.0.0.1:3000/api/titles",
+					"name": "127.0.0.1:3000/api/titles/",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1131,7 +876,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/titles",
+							"raw": "127.0.0.1:3000/api/titles/",
 							"host": [
 								"127",
 								"0",
@@ -1141,14 +886,15 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"titles"
+								"titles",
+								""
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "127.0.0.1:3000/api/titles",
+					"name": "127.0.0.1:3000/api/titles/",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1167,7 +913,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "127.0.0.1:3000/api/titles",
+							"raw": "127.0.0.1:3000/api/titles/",
 							"host": [
 								"127",
 								"0",
@@ -1177,7 +923,8 @@
 							"port": "3000",
 							"path": [
 								"api",
-								"titles"
+								"titles",
+								""
 							]
 						}
 					},
@@ -1310,6 +1057,354 @@
 									"key": "id",
 									"value": "1"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "shortlinks",
+			"item": [
+				{
+					"name": "/api/shortlinks/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/shortlinks/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"shortlinks",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/shortlinks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "url",
+									"value": "https://golangcode.com/getdsadsadsa",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/shortlinks",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"shortlinks"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "/api/shortlinks",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "url",
+											"value": "https://golangcode.com/getdsadsadsa",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/api/shortlinks",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"shortlinks"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Origin, Content-Type, Cache-Control, Authorization"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET, POST, PUT, DELETE, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 27 Dec 2018 23:31:35 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "151"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 5,\n    \"user_id\": 3,\n    \"uniq_id\": \"j-u5UXyig\",\n    \"url\": \"https://golangcode.com/getdsadsadsa\",\n    \"counter\": 0,\n    \"disabled\": false,\n    \"created_at\": null,\n    \"updated_at\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "/api/shortlinks/:id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/shortlinks/:id",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"shortlinks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/shortslinks/:id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "url",
+									"value": "https://google.se",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/shortlinks/:id",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"shortlinks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/shortslinks/update/:uniq_id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "url",
+									"value": "https://google.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/api/shortlinks/update/:uniq_id",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"shortlinks",
+								"update",
+								":uniq_id"
+							],
+							"variable": [
+								{
+									"key": "uniq_id",
+									"value": "Mi149tyig"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "invites",
+			"item": [
+				{
+					"name": "/api/invites/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/invites/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"invites",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/invites/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/invites/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"invites",
+								""
 							]
 						}
 					},
