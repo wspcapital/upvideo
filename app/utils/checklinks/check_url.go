@@ -1,4 +1,4 @@
-package shortlinks
+package checklinks
 
 import (
     _"fmt"
