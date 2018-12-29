@@ -9,8 +9,9 @@ import (
 
 var (
 	initialResolution = 1278
+	maxResolution     = 2000
 	minFrameRate      = 20
-	maxFrameRate      = 29
+	maxFrameRate      = 60
 )
 
 type Title struct {
@@ -48,6 +49,9 @@ func (this *Title) SetNextFrameRate() *Title {
 		this.FrameRate = minFrameRate
 	} else {
 		this.FrameRate++
+		if this.Resolution >= maxResolution {
+			this.Resolution = initialResolution
+		}
 		if this.FrameRate > maxFrameRate {
 			this.FrameRate = minFrameRate
 			this.Resolution += 16

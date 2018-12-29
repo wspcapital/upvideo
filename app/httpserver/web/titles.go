@@ -147,7 +147,8 @@ func (this *WebServer) titleSuggest(c *gin.Context) {
 		return
 	}
 
-	keywords, err := this.KeywordtoolService.GetKeywords(req.Title)
+	//keywords, err := this.KeywordtoolService.GetKeywords(req.Title)
+	keywords, err := this.KeywordtoolService.GetInstantSuggestions(req.Title)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Can not get keywords, try again later.")
 		return
