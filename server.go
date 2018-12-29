@@ -45,7 +45,7 @@ func main() {
 	initDbTables(db)
 
 	err = aws.AWSInitSession(&cfg.AWS)
-	utils.InitProject()
+	utils.InitProject(cfg.YoutubeUploaderPath)
 
 	var sessionRepository session.Repository
 	if cfg.Session.Storage == "db" {
@@ -56,7 +56,7 @@ func main() {
 		fmt.Println("Incorrect session storage specified")
 		os.Exit(1)
 	}
-	fmt.Printf("config: %v\n", cfg)
+	//fmt.Printf("config: %v\n", cfg)
 
 	titlesService     := titles.NewService(titles.NewRepository(db))
 	videoService      := videos.NewService(videos.NewRepository(db))

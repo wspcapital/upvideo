@@ -7,6 +7,8 @@ import(
 )
 
 
+
+
 func file_is_exists(f string) bool {
     _, err := os.Stat(f)
     if os.IsNotExist(err) {
@@ -16,16 +18,16 @@ func file_is_exists(f string) bool {
 }
 
 
-func InitProject(){
+func InitProject(tmpPath string) {
 
 	// check if directory needed exist.
 	paths := [...]string{
-			"tmp",
-			"tmp/metas",
-			"tmp/secrets",
-			"tmp/temp_videos",
-			"tmp/titles_videos",
-			"tmp/tokens",
+			tmpPath,
+			tmpPath + "/metas",
+			tmpPath + "/secrets",
+			tmpPath + "/temp_videos",
+			tmpPath + "/titles_videos",
+			tmpPath + "/tokens",
 	}
 
 	for _,path := range paths {

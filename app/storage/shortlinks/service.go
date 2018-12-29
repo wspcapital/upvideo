@@ -2,7 +2,6 @@ package shortlinks
 
 import (
 	"database/sql"
-	"bitbucket.org/marketingx/upvideo/app/utils/checklinks"
 	"fmt"
 	_"strconv"
 )
@@ -40,6 +39,8 @@ func (this *Service) Delete(item *Shortlink) error {
 	return this.repo.Delete(item)
 }
 
+
+//info: This func check if short links has beed disabled. 
 func (this *Service) CheckAllLinks() error {
 	var _shortlink []*Shortlink
 
@@ -56,7 +57,7 @@ func (this *Service) CheckAllLinks() error {
 	}
 
 	for _, link := range _shortlink {
-		if !link.Disabled && checklinks.CheckDisabledUrl(link.Url) {
+		if !link.Disabled && CheckDisabledUrl(link.Url) {
 			link.Disabled = true
 
 			err = this.repo.Update(link)
@@ -65,7 +66,7 @@ func (this *Service) CheckAllLinks() error {
 				continue
 			}
 
-			// fmt.Println("This shortlink id : ", link.UniqId, "has beed disabled")
+			//TODO: send email to user, link has beed disabled.
 		}
 	}
 

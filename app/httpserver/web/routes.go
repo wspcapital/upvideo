@@ -85,7 +85,7 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 	}
 
 	// shortlinks group apis.
-	r.GET("/go/:uniq_id", this.shortlinkExternal)
+	r.GET("/go/:uniq_id", this.ShortLinkRedirect)
 	_shortlinks := r.Group("/api/shortlinks")
 	_shortlinks.Use(this.requireAuth)
 	{

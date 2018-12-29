@@ -11,7 +11,9 @@ type Account struct {
 	ChannelUrl    string     `json:"channel_url"`
 	ClientId      string     `json:"client_id"`
 	ClientSecrets string     `json:"client_secrets"`
+	ClientSecretsRow string  `json:"client_secrets_row"`
 	RequestToken  string     `json:"request_token"`
+	RequestTokenRow string   `json:"request_token_row"`
 	AuthUrl       string     `json:"auth_url"`
 	OTPCode       string     `json:"otpcode"`
 	Note          string     `json:"note"`

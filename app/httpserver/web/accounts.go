@@ -16,6 +16,8 @@ import (
 	"path"
 	"regexp"
 	"strconv"
+	"io/ioutil"
+b64 "encoding/base64"
 )
 
 var (
@@ -136,12 +138,20 @@ func (this *WebServer) accountCreate(c *gin.Context) {
 		return
 	}
 
+    clientSecrets_row, err := ioutil.ReadFile(clientSecretsPath) // just pass the file name
+    if err != nil {
+        fmt.Print(err)
+    }
+
+	fmt.Println("base64 :", b64.URLEncoding.EncodeToString(clientSecrets_row))
+
 	_account := &accounts.Account{}
 	_account.UserId = this.getUser(c).Id
 	_account.ChannelName = req.ChannelName
 	_account.ChannelUrl = req.ChannelUrl
 	_account.ClientId = clientSecretsConf.ClientID
 	_account.ClientSecrets = clientSecretsPath
+	_account.ClientSecretsRow = b64.URLEncoding.EncodeToString(clientSecrets_row)
 	_account.AuthUrl = authUrl
 	_account.OTPCode = req.OTPCode
 	_account.Note = req.Note
@@ -228,7 +238,13 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 	matches := uploadSuccessfulRegexp.FindStringSubmatch(out.String())
 	url := "https://www.youtube.com/watch?v=" + matches[1]
 
+    token_row, err := ioutil.ReadFile(tokenPath) // just pass the file name
+    if err != nil {
+        fmt.Print(err)
+    }
+
 	_account.RequestToken = tokenPath
+	_account.RequestTokenRow = b64.URLEncoding.EncodeToString(token_row)
 
 	err = this.AccountService.Update(_account)
 	if err != nil {
@@ -273,7 +289,9 @@ func (this *WebServer) accountUpdate(c *gin.Context) {
 	_account.ChannelName = unsafe.ChannelName
 	_account.ChannelUrl = unsafe.ChannelUrl
 	_account.ClientSecrets = unsafe.ClientSecrets
+	_account.ClientSecretsRow = unsafe.ClientSecretsRow
 	_account.RequestToken = unsafe.RequestToken
+	_account.RequestTokenRow = unsafe.RequestTokenRow
 	_account.AuthUrl = unsafe.AuthUrl
 	_account.OTPCode = unsafe.OTPCode
 	_account.Note = unsafe.Note
@@ -324,28 +342,29 @@ func (this *WebServer) accountDelete(c *gin.Context) {
 		c.Status(http.StatusInternalServerError)
 	}
 
-	// set first account as selected
-	user := this.getUser(c)
-	_account, err = this.AccountService.FindOne(accounts.Params{
-		UserId: user.Id,
-	})
-	if err != nil && err != sql.ErrNoRows {
-		fmt.Println("\n this.AccountService.FindOne Error: ", err.Error())
-		c.Status(http.StatusInternalServerError)
-		return
-	}
+	// // set first account as selected
+	// user := this.getUser(c)
+	// _account, err = this.AccountService.FindOne(accounts.Params{
+	// 	UserId: user.Id,
+	// })
+	// if err != nil && err != sql.ErrNoRows {
+	// 	fmt.Println("\n this.AccountService.FindOne Error: ", err.Error())
+	// 	c.Status(http.StatusInternalServerError)
+	// 	return
+	// }
 
-	if err == sql.ErrNoRows {
-		user.AccountId = _account.Id
-	} else {
-		user.AccountId = _account.Id
-	}
-	err = this.UserService.Update(user)
-	if err != nil {
-		fmt.Println("\n this.UserService.Update Error: ", err.Error())
-		_ = c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
+	// if err == sql.ErrNoRows {
+	// 	user.AccountId = _account.Id
+	// } else {
+	// 	user.AccountId = _account.Id
+	// }
+	
+	// err = this.UserService.Update(user)
+	// if err != nil {
+	// 	fmt.Println("\n this.UserService.Update Error: ", err.Error())
+	// 	_ = c.AbortWithError(http.StatusInternalServerError, err)
+	// 	return
+	// }
 
 	c.Status(200)
 }

@@ -13,7 +13,7 @@ type Repository struct {
 }
 
 func (this *Repository) FindByOperation(UserId int, OperationId string) (*Account, error) {
-	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "ClientId", "Clientsecrets", "Requesttoken", "AuthUrl", "OnetimeCode", "Note", "OperationId", "Created_at", "Updated_at").From("accounts")
+	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "ClientId", "Clientsecrets","Clientsecretsrow", "Requesttoken","Requesttokenrow", "AuthUrl", "OnetimeCode", "Note", "OperationId", "Created_at", "Updated_at").From("accounts")
 
 	if UserId < 1 || OperationId == "" {
 		return nil, errors.New("Wrong sql request parameters")
@@ -33,7 +33,9 @@ func (this *Repository) FindByOperation(UserId int, OperationId string) (*Accoun
 		&_account.ChannelUrl,
 		&_account.ClientId,
 		&_account.ClientSecrets,
+		&_account.ClientSecretsRow,
 		&_account.RequestToken,
+		&_account.RequestTokenRow,
 		&_account.AuthUrl,
 		&_account.OTPCode,
 		&_account.Note,
@@ -51,7 +53,7 @@ func (this *Repository) FindByOperation(UserId int, OperationId string) (*Accoun
 }
 
 func (this *Repository) FindAll(params Params) (items []*Account, err error) {
-	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "ClientId", "Clientsecrets", "Requesttoken", "AuthUrl", "OnetimeCode", "Note", "OperationId", "Created_at", "Updated_at").From("accounts")
+	query := sq.Select("Id", "UserId", "Username", "Password", "Channelname", "Channelurl", "ClientId", "Clientsecrets", "Clientsecretsrow", "Requesttoken", "Requesttokenrow", "AuthUrl", "OnetimeCode", "Note", "OperationId", "Created_at", "Updated_at").From("accounts")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
@@ -98,7 +100,9 @@ func (this *Repository) FindAll(params Params) (items []*Account, err error) {
 			&_account.ChannelUrl,
 			&_account.ClientId,
 			&_account.ClientSecrets,
+			&_account.ClientSecretsRow,
 			&_account.RequestToken,
+			&_account.RequestTokenRow,
 			&_account.AuthUrl,
 			&_account.OTPCode,
 			&_account.Note,
@@ -122,7 +126,9 @@ func (this *Repository) Insert(item *Account) error {
                     Channelurl=?, 
                     ClientId=?, 
                     Clientsecrets=?, 
-                    Requesttoken=?, 
+                    Clientsecretsrow=?,
+                    Requesttoken=?,
+                    Requesttokenrow=?, 
                     AuthUrl=?, 
                     OnetimeCode=?, 
                     Note=?, 
@@ -134,7 +140,9 @@ func (this *Repository) Insert(item *Account) error {
 		item.ChannelUrl,
 		item.ClientId,
 		item.ClientSecrets,
+		item.ClientSecretsRow,
 		item.RequestToken,
+		item.RequestTokenRow,
 		item.AuthUrl,
 		item.OTPCode,
 		item.Note,
@@ -154,7 +162,7 @@ func (this *Repository) Insert(item *Account) error {
 }
 
 func (this *Repository) Update(item *Account) error {
-	_, err := this.db.Exec("UPDATE accounts SET UserId=?, Username=?, Password=?, Channelname=?, Channelurl=?, ClientId=?, Clientsecrets=?, Requesttoken=?, AuthUrl=?, OnetimeCode=?, Note=?, OperationId=?, Updated_at=NOW() WHERE Id=?",
+	_, err := this.db.Exec("UPDATE accounts SET UserId=?, Username=?, Password=?, Channelname=?, Channelurl=?, ClientId=?, Clientsecrets=?, Clientsecretsrow=?, Requesttoken=?, Requesttokenrow=?, AuthUrl=?, OnetimeCode=?, Note=?, OperationId=?, Updated_at=NOW() WHERE Id=?",
 		item.UserId,
 		item.Username,
 		item.Password,
@@ -162,7 +170,9 @@ func (this *Repository) Update(item *Account) error {
 		item.ChannelUrl,
 		item.ClientId,
 		item.ClientSecrets,
+		item.ClientSecretsRow,
 		item.RequestToken,
+		item.RequestTokenRow,
 		item.AuthUrl,
 		item.OTPCode,
 		item.Note,

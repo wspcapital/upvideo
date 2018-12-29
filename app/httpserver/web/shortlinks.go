@@ -201,7 +201,7 @@ func (this *WebServer) shortlinkDelete(c *gin.Context) {
 }
 
 
-func (this *WebServer) shortlinkExternal(c *gin.Context) {
+func (this *WebServer) ShortLinkRedirect(c *gin.Context) {
 	type RedirectRequest struct {
 		UniqId          string `validate:"shortlink"`
 	}
