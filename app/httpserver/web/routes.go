@@ -24,6 +24,13 @@ func (this *WebServer) initRoutes(r *gin.Engine) {
 	r.POST("/auth/change-password", this.requireAuth, this.userChangePassword)
 	r.POST("/auth/reset-apikey", this.requireAuth, this.userResetApikey)
 
+	//dashboard
+	dashboard := r.Group("/api/dashboard")
+	dashboard.Use(this.requireAuth)
+	{
+		dashboard.GET("/:period", this.dashboardView)
+	}
+
 	profile := r.Group("/api/profile")
 	profile.Use(this.requireAuth)
 	{

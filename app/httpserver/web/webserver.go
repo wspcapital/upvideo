@@ -1,18 +1,19 @@
 package web
 
 import (
-	"bitbucket.org/marketingx/upvideo/app/storage/accounts"
-	"bitbucket.org/marketingx/upvideo/app/storage/campaigns"
+	"bitbucket.org/marketingx/upvideo/app/domain/email"
 	"bitbucket.org/marketingx/upvideo/app/domain/session"
 	"bitbucket.org/marketingx/upvideo/app/domain/usr"
-	"bitbucket.org/marketingx/upvideo/app/domain/email"
+	"bitbucket.org/marketingx/upvideo/app/storage/accounts"
+	"bitbucket.org/marketingx/upvideo/app/storage/campaigns"
+	"bitbucket.org/marketingx/upvideo/app/storage/invites"
 	"bitbucket.org/marketingx/upvideo/app/storage/jobs"
+	"bitbucket.org/marketingx/upvideo/app/storage/shortlinks"
+	"bitbucket.org/marketingx/upvideo/app/storage/titles"
+	"bitbucket.org/marketingx/upvideo/app/storage/topusers"
+	"bitbucket.org/marketingx/upvideo/app/storage/videos"
 	"bitbucket.org/marketingx/upvideo/app/utils/keywordtool"
 	"bitbucket.org/marketingx/upvideo/app/utils/rapidtags"
-	"bitbucket.org/marketingx/upvideo/app/storage/titles"
-	"bitbucket.org/marketingx/upvideo/app/storage/videos"
-	"bitbucket.org/marketingx/upvideo/app/storage/shortlinks"
-	"bitbucket.org/marketingx/upvideo/app/storage/invites"
 	"bitbucket.org/marketingx/upvideo/config"
 	"fmt"
 	"github.com/gin-gonic/autotls"
@@ -31,6 +32,7 @@ type WebServer struct {
 	AccountService     *accounts.Service
 	CampaignService    *campaigns.Service
 	TitleService       *titles.Service
+	TopUserService     *topusers.Service
 	ShortlinksService  *shortlinks.Service
 	JobService         *jobs.Service
 	KeywordtoolService *keywordtool.Service

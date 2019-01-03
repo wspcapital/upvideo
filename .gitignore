@@ -1,6 +1,7 @@
 .idea/
 youtubeuploader/
 .tmp/
+tmp/
 server_go
 
 test.config.json

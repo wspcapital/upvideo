@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bitbucket.org/marketingx/upvideo/app/storage/topusers"
 	"github.com/robfig/cron"
 	"bitbucket.org/marketingx/upvideo/app/storage/accounts"
 	"bitbucket.org/marketingx/upvideo/app/storage/campaigns"
@@ -65,6 +66,7 @@ func main() {
 	campaignService   := campaigns.NewService(campaigns.NewRepository(db))
 	shortlinksService := shortlinks.NewService(shortlinks.NewRepository(db))
 	invitesService    := invites.NewService(invites.NewRepository(db))
+	topusersService    := topusers.NewService(topusers.NewRepository(db))
 
 	webServer := &web.WebServer{
 		UserService:        usr.NewUserService(httpserver.NewUserRepository(db)),
@@ -73,6 +75,7 @@ func main() {
 		AccountService:     accountService,
 		CampaignService:    campaignService,
 		TitleService:       titlesService,
+		TopUserService:      topusersService,
 		JobService:         jobsService,
 		KeywordtoolService: keywordtool.NewService(&cfg.Keywordtool),
 		RapidtagsService:   rapidtags.NewService(),
