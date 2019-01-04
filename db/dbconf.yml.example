@@ -1,0 +1,7 @@
+production:
+  driver: mysql
+  open: root:password@tcp(127.0.0.1:8406)/upload_app?parseTime=true
+
+development:
+  driver: mysql
+  open: root:password@tcp(127.0.0.1:8406)/upload_app?parseTime=true

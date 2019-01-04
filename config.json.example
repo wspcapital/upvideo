@@ -1,0 +1,39 @@
+{
+	"Dsn": "root:password@tcp(127.0.0.1:3306)/upload_app?parseTime=true",
+    "CheckInterval": 5,
+    "youtubeuploader_cmd": "./tmp/upload",
+    "youtubeuploader_path": "./tmp",
+	"testvideo": "./tmp/test.mp4",
+	"testvideo_meta": "./testvideo.meta.json",
+	"Session" : {
+		"Storage": "db",
+		"TTLMinutes": 30,
+	},
+	"WebServer" : {
+		"Bind": ":3000",
+		"Production" : false,
+		"StaticDir": "./frontend",
+		"SSL": false,
+		"Registration": true,
+		"InviteOnly": false,
+		"DebugMode": false,
+		"CertCache": "/var/www/.cache",
+		"HostsWhitelist": ["upvideo.local"]
+	},
+	"AWS": {
+		"ACCESS_KEY_ID": "",
+		"SECRET_KEY": "",
+		"REGION": "us-east-1",
+		"bucket": ""
+	},
+	"email": {
+		"from": "no-reply@amazon.com",
+		"reply": "realemail@amazon.com",
+		"templates": {
+			"restore_password": "./templates/email/restore-password.html"
+		}
+	},
+	"keywordtool.io": {
+		"API_KEY": ""
+	}
+}
