@@ -13,9 +13,9 @@ func (this *Repository) FindAll(params Params) (items []*TopUser, err error) {
 
 	rows, err := this.db.Query("SELECT `user`.Id as id, " +
 	"`user`.Email as author_name, " +
-		"COUNT(DISTINCT accounts.id) AS new_channels, " +
+		"COUNT(DISTINCT accounts.id) AS new_campaigns, " +
 		"MAX(accounts.Updated_at) AS last_activity, " +
-		"COUNT(DISTINCT campaigns.id) AS new_videos " +
+		"COUNT(DISTINCT campaigns.id) AS new_accounts " +
 		"FROM accounts " +
 	"LEFT OUTER JOIN `user` ON (accounts.UserId = `user`.id) " +
 	"LEFT OUTER JOIN videos ON (accounts.id = videos.AccountId) " +
@@ -40,9 +40,9 @@ func (this *Repository) FindAll(params Params) (items []*TopUser, err error) {
 		rows.Scan(
 			&topuser.Id,
 			&topuser.Email,
-			&topuser.NewChannelsCount,
+			&topuser.NewCampaignsCount,
 			&topuser.LastActivity,
-			&topuser.NewVideosCount,
+			&topuser.NewAccountsCount,
 		)
 
 		items = append(items, topuser)

@@ -45,7 +45,7 @@ func (this *WebServer) dashboardView(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(queryParams)
+	//fmt.Println(queryParams)
 
 	items, err := this.TopUserService.FindAll(queryParams)
 	if err != nil {

@@ -5,9 +5,9 @@ import (
 )
 
 type TopUser struct {
-	Id               int        `json:"id"`
-	Email            string     `json:"author_username"`
-	NewVideosCount   int        `json:"new_videos"`
-	NewChannelsCount int        `json:"new_channels"`
-	LastActivity     *time.Time `json:"last_activity"`
+	Id                int        `json:"id"`
+	Email             string     `json:"author_username"`
+	NewAccountsCount  int        `json:"new_accounts"`
+	NewCampaignsCount int        `json:"new_campaigns"`
+	LastActivity      *time.Time `json:"last_activity"`
 }
