@@ -60,6 +60,16 @@ func (this *WebServer) videoCreate(c *gin.Context) {
 		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
 		return
 	}
+
+	file_type := fmt.Sprint(file.Header["Content-Type"])
+	if file_type != "[video/mp4]" &&
+		file_type != "[video/x-ms-wmv]" &&
+		file_type != "[video/x-msvideo]" &&
+		file_type != "[video/quicktime]" {
+		c.String(http.StatusBadRequest, fmt.Sprint("Incorrect file type"))
+		return
+	}
+
 	fileReader, err := file.Open()
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
