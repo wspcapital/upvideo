@@ -4,6 +4,8 @@ youtubeuploader/
 tmp/
 server_go
 
+db/dbconf.yml
+
 test.config.json
 dev.config.json
 prod.config.json
