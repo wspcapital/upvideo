@@ -7,8 +7,10 @@ import (
 	"bitbucket.org/marketingx/upvideo/app/utils/youtubeauth"
 	"bytes"
 	"database/sql"
+	b64 "encoding/base64"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	_ "log"
 	"net/http"
 	"os"
@@ -16,8 +18,6 @@ import (
 	"path"
 	"regexp"
 	"strconv"
-	"io/ioutil"
-b64 "encoding/base64"
 )
 
 var (
@@ -138,10 +138,10 @@ func (this *WebServer) accountCreate(c *gin.Context) {
 		return
 	}
 
-    clientSecrets_row, err := ioutil.ReadFile(clientSecretsPath) // just pass the file name
-    if err != nil {
-        fmt.Print(err)
-    }
+	clientSecrets_row, err := ioutil.ReadFile(clientSecretsPath) // just pass the file name
+	if err != nil {
+		fmt.Print(err)
+	}
 
 	fmt.Println("base64 :", b64.URLEncoding.EncodeToString(clientSecrets_row))
 
@@ -238,10 +238,10 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 	matches := uploadSuccessfulRegexp.FindStringSubmatch(out.String())
 	url := "https://www.youtube.com/watch?v=" + matches[1]
 
-    token_row, err := ioutil.ReadFile(tokenPath) // just pass the file name
-    if err != nil {
-        fmt.Print(err)
-    }
+	token_row, err := ioutil.ReadFile(tokenPath) // just pass the file name
+	if err != nil {
+		fmt.Print(err)
+	}
 
 	_account.RequestToken = tokenPath
 	_account.RequestTokenRow = b64.URLEncoding.EncodeToString(token_row)
@@ -262,7 +262,10 @@ func (this *WebServer) accountConfirm(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"uploaded": "succcessfull", "url": url})
+	c.JSON(200, gin.H{
+		"uploaded":   "successful",
+		"url":        url,
+		"account_id": user.AccountId})
 }
 
 func (this *WebServer) accountUpdate(c *gin.Context) {
@@ -358,7 +361,7 @@ func (this *WebServer) accountDelete(c *gin.Context) {
 	// } else {
 	// 	user.AccountId = _account.Id
 	// }
-	
+
 	// err = this.UserService.Update(user)
 	// if err != nil {
 	// 	fmt.Println("\n this.UserService.Update Error: ", err.Error())
