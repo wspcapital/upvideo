@@ -68,7 +68,13 @@ func (this *Service) GetTags(title string) (items []string, err error) {
 		return nil, err
 	}
 
-	for _, tag := range jsonRes[:5] {
+	itemsCount := len(jsonRes)
+
+	if itemsCount > 5 {
+		itemsCount = 5
+	}
+
+	for _, tag := range jsonRes[:itemsCount] {
 		if t, ok := tag.(int); ok {
 			items = append(items, strconv.Itoa(t))
 		}
