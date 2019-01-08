@@ -12,7 +12,21 @@ type Repository struct {
 }
 
 func (this *Repository) FindAll(params Params) (items []*Video, err error) {
-	query := sq.Select("Id", "UserId", "AccountId", "Title", "Description", "Tags", "Category", "Language", "File", "TmpFile", "Playlist", "Title_gen", "IpAddress").From("videos")
+	query := sq.Select(
+		"Id",
+		"UserId",
+		"AccountId",
+		"Title",
+		"Description",
+		"Tags",
+		"Category",
+		"Language",
+		"File",
+		"TmpFile",
+		"Playlist",
+		"Title_gen",
+		"IpAddress",
+		"Created_at").From("videos")
 
 	if params.UserId != 0 {
 		query = query.Where("UserId = ?", params.UserId)
@@ -55,6 +69,7 @@ func (this *Repository) FindAll(params Params) (items []*Video, err error) {
 			&video.Playlist,
 			&video.TitleGen,
 			&video.IpAddress,
+			&video.CreatedAt,
 		)
 		items = append(items, video)
 	}

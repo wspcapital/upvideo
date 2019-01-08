@@ -14,4 +14,5 @@ type Video struct {
 	Playlist    string `json:"playlist"`
 	TitleGen    bool   `json:"title_gen"`
 	IpAddress   string `json:"ip_address"`
+	CreatedAt   int    `json:"created_at"`
 }
